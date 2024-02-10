@@ -1,0 +1,7 @@
+CREATE TABLE users (
+    user_id BIGINT PRIMARY KEY,
+    username CHARACTER VARYING(255) UNIQUE,
+    password CHARACTER VARYING(255),
+    email CHARACTER VARYING(255) UNIQUE,
+    user_role CHARACTER VARYING(30)
+);

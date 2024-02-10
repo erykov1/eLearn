@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="1" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-001-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli user</comment>
+    </changeSet>
+    <changeSet id="2" author="e.marnik">
+        <createSequence sequenceName="user_sequence" incrementBy="1" startValue="1"/>
+        <comment>sekwencja id dla uzytkownika</comment>
+    </changeSet>
+</databaseChangeLog>
