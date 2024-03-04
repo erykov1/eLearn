@@ -11,4 +11,16 @@
         <createSequence sequenceName="user_sequence" incrementBy="1" startValue="1"/>
         <comment>sekwencja id dla uzytkownika</comment>
     </changeSet>
+    <changeSet id="3" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-002-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli close_questions</comment>
+    </changeSet>
+    <changeSet id="4" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-003-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli open_questions</comment>
+    </changeSet>
+    <changeSet id="5" author="e.marnik">
+        <createSequence sequenceName="question_sequence" incrementBy="1" startValue="1"/>
+        <comment>sekwencja id dla pytan</comment>
+    </changeSet>
 </databaseChangeLog>

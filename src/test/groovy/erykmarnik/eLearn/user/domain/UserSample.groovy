@@ -36,6 +36,7 @@ trait UserSample {
   void equalsUser(List<UserDto> result, List<UserDto> expected) {
     def comparator = Comparator.comparing(UserDto::getUsername)
     result.sort(comparator)
+    expected.sort(comparator)
     assert result.userId == expected.userId
     assert result.username == expected.username
     assert result.userRole == expected.userRole

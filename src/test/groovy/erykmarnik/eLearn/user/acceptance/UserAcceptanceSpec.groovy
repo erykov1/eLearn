@@ -1,6 +1,7 @@
-package erykmarnik.eLearn.user.domain
+package erykmarnik.eLearn.user.acceptance
 
 import erykmarnik.eLearn.integration.IntegrationSpec
+import erykmarnik.eLearn.user.domain.UserSample
 import erykmarnik.eLearn.user.dto.UserDto
 import erykmarnik.eLearn.user.dto.UserRoleDto
 
