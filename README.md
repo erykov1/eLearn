@@ -1,5 +1,5 @@
 # eLearn
-## launching: 
+## launching
   * create folder certs in resources and in this folder:
     - create file private.pem - add private key HS256
     - create file public.pem - add public key HS256
