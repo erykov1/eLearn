@@ -64,6 +64,10 @@ public class QuizFacade {
     quizRepository.deleteById(quizId);
   }
 
+  public void checkIfExists(UUID quizId) {
+    quizRepository.findByQuizId(quizId).orElseThrow(() -> new QuizNotFoundException("Quiz not found"));
+  }
+
   public void cleanup() {
     quizRepository.deleteAll();
   }

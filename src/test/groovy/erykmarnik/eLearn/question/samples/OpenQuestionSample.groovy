@@ -32,4 +32,6 @@ trait OpenQuestionSample {
     assert result.questionContent == expected.questionContent
     assert result.correctAnswer == expected.correctAnswer
   }
+
+  final static long FAKE_QUESTION_ID = 103L
 }

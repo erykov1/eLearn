@@ -10,6 +10,9 @@ import erykmarnik.eLearn.quiz.dto.CreateQuizDto
 import erykmarnik.eLearn.quiz.dto.NewQuizNameDto
 import erykmarnik.eLearn.quiz.dto.QuizDifficultyDto
 import erykmarnik.eLearn.quiz.dto.QuizDto
+import erykmarnik.eLearn.quizassignation.dto.CreateQuizAssignationDto
+import erykmarnik.eLearn.quizassignation.dto.DeleteQuizAssignationDto
+import erykmarnik.eLearn.quizassignation.dto.QuizAssignationDto
 import erykmarnik.eLearn.user.dto.CreateUserDto
 import erykmarnik.eLearn.user.dto.UserDto
 import org.springframework.http.MediaType
@@ -23,11 +26,13 @@ class ELearnApi {
   private final UserApi userApi
   private final QuestionApi questionApi
   private final QuizApi quizApi
+  private final QuizAssignationApi quizAssignationApi
 
   ELearnApi(MockMvc mockMvc, ObjectMapper objectMapper) {
     this.userApi = new UserApi(mockMvc, objectMapper)
     this.questionApi = new QuestionApi(mockMvc, objectMapper)
     this.quizApi = new QuizApi(mockMvc, objectMapper)
+    this.quizAssignationApi = new QuizAssignationApi(mockMvc, objectMapper)
   }
 
   UserApi user() {
@@ -40,6 +45,10 @@ class ELearnApi {
 
   QuizApi quiz() {
     quizApi
+  }
+
+  QuizAssignationApi quizAssignation() {
+    quizAssignationApi
   }
 
   class UserApi {
@@ -202,6 +211,57 @@ class ELearnApi {
 
     void cleanup() {
       ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/quiz/cleanup"))
+      checkResponse(perform.andReturn().response)
+    }
+  }
+
+  class QuizAssignationApi {
+    private final MockMvc mvc
+    private final ObjectMapper mapper
+
+    QuizAssignationApi(MockMvc mvc, ObjectMapper mapper) {
+      this.mvc = mvc
+      this.mapper = mapper
+    }
+
+    QuizAssignationDto createQuizAssignation(CreateQuizAssignationDto createQuizAssignation) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.post("/api/quizAssignation/create")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(mapper.writeValueAsString(createQuizAssignation))
+      )
+      checkResponse(perform.andReturn().response)
+      QuizAssignationDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructType(QuizAssignationDto.class))
+      value
+    }
+
+    void deleteQuizAssignation(UUID quizId, Long questionId) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.delete("/api/quizAssignation/delete/{quizId}/{questionId}", quizId, questionId)
+          .contentType(MediaType.APPLICATION_JSON)
+      )
+      checkResponse(perform.andReturn().response)
+    }
+
+    List<Long> getAllQuestionsAssignedToQuiz(UUID quizId) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/quizAssignation/getQuestions/{quizId}", quizId)
+          .contentType(MediaType.APPLICATION_JSON)
+      )
+      checkResponse(perform.andReturn().response)
+      List<Long> value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
+          mapper.getTypeFactory().constructCollectionType(List.class, Long.class))
+      value
+    }
+
+    QuizAssignationDto getQuizAssignation(Long assignationId) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/quizAssignation/get/{assignationId}", assignationId)
+          .contentType(MediaType.APPLICATION_JSON)
+      )
+      checkResponse(perform.andReturn().response)
+      QuizAssignationDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructType(QuizAssignationDto.class))
+      value
+    }
+
+    void cleanup() {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/quizAssignation/cleanup"))
       checkResponse(perform.andReturn().response)
     }
   }

@@ -45,4 +45,6 @@ trait QuizSample {
     assert result.createdBy == expected.createdBy
     assert result.quizDifficulty == expected.quizDifficulty
   }
+
+  static final UUID FAKE_QUIZ_ID = UUID.fromString("6c27b86a-f12c-4be5-9934-fd297b1a6fcb")
 }

@@ -2,17 +2,14 @@ package erykmarnik.eLearn.quiz;
 
 import erykmarnik.eLearn.quiz.domain.QuizFacade;
 import erykmarnik.eLearn.quiz.dto.CreateQuizDto;
-import erykmarnik.eLearn.quiz.dto.NewQuizNameDto;
 import erykmarnik.eLearn.quiz.dto.QuizDifficultyDto;
 import erykmarnik.eLearn.quiz.dto.QuizDto;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

@@ -27,4 +27,12 @@
         <sqlFile path="db/changelog/sql/change-004-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
         <comment>dodanie tabeli quizzes</comment>
     </changeSet>
+    <changeSet id="7" author="e.marnik">
+        <createSequence sequenceName="quiz_assignation_sequence" incrementBy="1" startValue="1"/>
+        <comment>sekwencja id dla przypisan pytan do quizow</comment>
+    </changeSet>
+    <changeSet id="8" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-005-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli quiz_assignations</comment>
+    </changeSet>
 </databaseChangeLog>
