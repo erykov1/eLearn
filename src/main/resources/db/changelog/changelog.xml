@@ -23,4 +23,8 @@
         <createSequence sequenceName="question_sequence" incrementBy="1" startValue="1"/>
         <comment>sekwencja id dla pytan</comment>
     </changeSet>
+    <changeSet id="6" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-004-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli quizzes</comment>
+    </changeSet>
 </databaseChangeLog>

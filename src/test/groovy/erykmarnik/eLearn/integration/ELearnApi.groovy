@@ -6,6 +6,10 @@ import erykmarnik.eLearn.question.dto.CreateCloseQuestionDto
 import erykmarnik.eLearn.question.dto.CreateOpenQuestionDto
 import erykmarnik.eLearn.question.dto.EditQuestionDto
 import erykmarnik.eLearn.question.dto.OpenQuestionDto
+import erykmarnik.eLearn.quiz.dto.CreateQuizDto
+import erykmarnik.eLearn.quiz.dto.NewQuizNameDto
+import erykmarnik.eLearn.quiz.dto.QuizDifficultyDto
+import erykmarnik.eLearn.quiz.dto.QuizDto
 import erykmarnik.eLearn.user.dto.CreateUserDto
 import erykmarnik.eLearn.user.dto.UserDto
 import org.springframework.http.MediaType
@@ -18,10 +22,12 @@ import java.nio.charset.StandardCharsets
 class ELearnApi {
   private final UserApi userApi
   private final QuestionApi questionApi
+  private final QuizApi quizApi
 
   ELearnApi(MockMvc mockMvc, ObjectMapper objectMapper) {
     this.userApi = new UserApi(mockMvc, objectMapper)
     this.questionApi = new QuestionApi(mockMvc, objectMapper)
+    this.quizApi = new QuizApi(mockMvc, objectMapper)
   }
 
   UserApi user() {
@@ -30,6 +36,10 @@ class ELearnApi {
 
   QuestionApi question() {
     questionApi
+  }
+
+  QuizApi quiz() {
+    quizApi
   }
 
   class UserApi {
@@ -140,6 +150,58 @@ class ELearnApi {
 
     void cleanup() {
       ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/question/cleanup"))
+      checkResponse(perform.andReturn().response)
+    }
+  }
+
+  class QuizApi {
+    private final MockMvc mvc
+    private final ObjectMapper mapper
+
+    QuizApi(MockMvc mvc, ObjectMapper mapper) {
+      this.mvc = mvc
+      this.mapper = mapper
+    }
+
+    QuizDto createQuiz(CreateQuizDto createQuiz) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.post("/api/quiz/create")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(mapper.writeValueAsString(createQuiz))
+      )
+      checkResponse(perform.andReturn().response)
+      QuizDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructType(QuizDto.class))
+      value
+    }
+
+    QuizDto changeQuizDifficulty(UUID quizId, QuizDifficultyDto quizDifficulty) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.put("/api/quiz/difficulty/{quizId}", quizId)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(mapper.writeValueAsString(quizDifficulty))
+      )
+      checkResponse(perform.andReturn().response)
+      QuizDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructType(QuizDto.class))
+      value
+    }
+
+    QuizDto findById(UUID quizId) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/quiz/{quizId}", quizId))
+      checkResponse(perform.andReturn().response)
+      QuizDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructType(QuizDto.class))
+      value
+    }
+
+    QuizDto changeQuizName(UUID quizId, String quizName) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.put("/api/quiz/name/{quizId}", quizId)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(mapper.writeValueAsString(quizName))
+      )
+      checkResponse(perform.andReturn().response)
+      QuizDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructType(QuizDto.class))
+      value
+    }
+
+    void cleanup() {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/quiz/cleanup"))
       checkResponse(perform.andReturn().response)
     }
   }

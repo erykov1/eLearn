@@ -42,4 +42,10 @@ trait UserSample {
     assert result.userRole == expected.userRole
     assert result.email == expected.email
   }
+
+  static final CreateUserDto JAMES = CreateUserDto.builder()
+      .username("jamesSmith")
+      .password("jamesPswd")
+      .email("james@gmail.com")
+      .build()
 }
