@@ -35,4 +35,12 @@
         <sqlFile path="db/changelog/sql/change-005-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
         <comment>dodanie tabeli quiz_assignations</comment>
     </changeSet>
+    <changeSet id="9" author="e.marnik">
+        <createSequence sequenceName="user_assignation_sequence" incrementBy="1" startValue="1"/>
+        <comment>sekwencja id dla przypisan uzytkownika do quizow/obiektow</comment>
+    </changeSet>
+    <changeSet id="10" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-006-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli przypisan uzytkownika do quizow/obiektow</comment>
+    </changeSet>
 </databaseChangeLog>

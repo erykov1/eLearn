@@ -129,7 +129,9 @@ class InMemoryUserRepository implements UserRepository {
 
   @Override
   public Optional<User> findById(Long aLong) {
-    return Optional.empty();
+    return table.values().stream()
+        .filter(user -> user.dto().getUserId().equals(aLong))
+        .findFirst();
   }
 
   @Override

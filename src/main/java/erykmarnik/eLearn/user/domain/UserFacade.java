@@ -48,6 +48,10 @@ public class UserFacade {
         .collect(Collectors.toList());
   }
 
+  public void checkIfExists(Long userId) {
+    userRepository.findById(userId).orElseThrow(() -> new NotExistingUserException("User does not exist"));
+  }
+
   public UserDto findUserByUsername(String username) {
     return userRepository.findByUsername(username)
         .map(User::dto)
