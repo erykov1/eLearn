@@ -12,6 +12,21 @@
     - spring.liquibase.change-log=classpath:/db/changelog/changelog.xml
     - rsa.private-key=classpath:certs/private.pem
     - rsa.public-key=classpath:certs/public.pem
+   
+  * to launch structurizr and generate diagram:
+    - create account https://structurizr.com/signup
+    - create workspace
+    - run class StructurizrMain with env variables:
+      a) workspace.id = <workspace_id>
+      b) api.key = <api_key>
+      c) api.secret = <secret_key>
+## current architecture
+![structurizr-90179-eLearn components](https://github.com/erykov1/eLearn/assets/62502523/82693536-bfd9-4d1f-a186-70208406ff7a)
+
+   
+## release 1.1.0
+  - architecture for application
+  - user assignations to learning object (current only to quiz)
 ## release 1.0.0
   - possibility to create open and closed questions
   - possibility to modify questions
