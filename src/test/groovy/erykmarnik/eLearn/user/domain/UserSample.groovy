@@ -3,8 +3,11 @@ package erykmarnik.eLearn.user.domain
 import erykmarnik.eLearn.user.dto.CreateUserDto
 import erykmarnik.eLearn.user.dto.UserDto
 import erykmarnik.eLearn.user.dto.UserRoleDto
+import erykmarnik.eLearn.userassignation.dto.CreateUserAssignationDto
 
 trait UserSample {
+  static final Long FAKE_USER_ID = 11L
+
   private static Map<String, Object> DEFAULT_USER_DATA = [
       userId: 1L,
       username: 'janeDoe',
@@ -42,6 +45,13 @@ trait UserSample {
     assert result.userRole == expected.userRole
     assert result.email == expected.email
   }
+
+  static final CreateUserDto ADAM = CreateUserDto.builder()
+      .username("adamSmith")
+      .password("adamPswd")
+      .email("adam@gmail.com")
+      .build()
+
 
   static final CreateUserDto JAMES = CreateUserDto.builder()
       .username("jamesSmith")

@@ -15,24 +15,32 @@ import erykmarnik.eLearn.quizassignation.dto.DeleteQuizAssignationDto
 import erykmarnik.eLearn.quizassignation.dto.QuizAssignationDto
 import erykmarnik.eLearn.user.dto.CreateUserDto
 import erykmarnik.eLearn.user.dto.UserDto
+import erykmarnik.eLearn.userassignation.dto.CreateUserAssignationDto
+import erykmarnik.eLearn.userassignation.dto.UserAssignationDto
+import org.apache.catalina.User
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import java.nio.charset.StandardCharsets
+import java.time.Instant
 
 class ELearnApi {
   private final UserApi userApi
   private final QuestionApi questionApi
   private final QuizApi quizApi
   private final QuizAssignationApi quizAssignationApi
+  private final UserAssignationApi userAssignationApi
+  private final TimeProviderApi timeProviderApi
 
   ELearnApi(MockMvc mockMvc, ObjectMapper objectMapper) {
     this.userApi = new UserApi(mockMvc, objectMapper)
     this.questionApi = new QuestionApi(mockMvc, objectMapper)
     this.quizApi = new QuizApi(mockMvc, objectMapper)
     this.quizAssignationApi = new QuizAssignationApi(mockMvc, objectMapper)
+    this.userAssignationApi = new UserAssignationApi(mockMvc, objectMapper)
+    this.timeProviderApi = new TimeProviderApi(mockMvc, objectMapper)
   }
 
   UserApi user() {
@@ -49,6 +57,14 @@ class ELearnApi {
 
   QuizAssignationApi quizAssignation() {
     quizAssignationApi
+  }
+
+  UserAssignationApi userAssignation() {
+    userAssignationApi
+  }
+
+  TimeProviderApi timeProvider() {
+    timeProviderApi
   }
 
   class UserApi {
@@ -262,6 +278,77 @@ class ELearnApi {
 
     void cleanup() {
       ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/quizAssignation/cleanup"))
+      checkResponse(perform.andReturn().response)
+    }
+  }
+
+  class UserAssignationApi {
+    private final MockMvc mvc
+    private final ObjectMapper mapper
+
+    UserAssignationApi(MockMvc mvc, ObjectMapper mapper) {
+      this.mvc = mvc
+      this.mapper = mapper
+    }
+
+    UserAssignationDto createUserAssignation(CreateUserAssignationDto createUserAssignation) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.post("/api/userAssignation/create")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(mapper.writeValueAsString(createUserAssignation))
+      )
+      checkResponse(perform.andReturn().response)
+      UserAssignationDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
+          mapper.getTypeFactory().constructType(UserAssignationDto.class))
+      value
+    }
+
+    UserAssignationDto changeToInProgress(Long id) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.put("/api/userAssignation/inProgress/{id}", id)
+          .contentType(MediaType.APPLICATION_JSON)
+      )
+      checkResponse(perform.andReturn().response)
+      UserAssignationDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
+          mapper.getTypeFactory().constructType(UserAssignationDto.class))
+      value
+    }
+
+    UserAssignationDto changeToCompleted(Long id) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.put("/api/userAssignation/completed/{id}", id)
+          .contentType(MediaType.APPLICATION_JSON)
+      )
+      checkResponse(perform.andReturn().response)
+      UserAssignationDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
+          mapper.getTypeFactory().constructType(UserAssignationDto.class))
+      value
+    }
+
+    void cleanup() {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/userAssignation/cleanup"))
+      checkResponse(perform.andReturn().response)
+    }
+  }
+
+  class TimeProviderApi {
+    private final MockMvc mvc
+    private final ObjectMapper mapper
+
+    TimeProviderApi(MockMvc mvc, ObjectMapper mapper) {
+      this.mvc = mvc
+      this.mapper = mapper
+    }
+
+    void useFixedClock(Instant instant) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.post("/api/time/fixedClock")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(mapper.writeValueAsString(instant))
+      )
+      checkResponse(perform.andReturn().response)
+    }
+
+    void useSystemClock() {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/time/systemClock")
+          .contentType(MediaType.APPLICATION_JSON)
+      )
       checkResponse(perform.andReturn().response)
     }
   }
