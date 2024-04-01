@@ -21,7 +21,8 @@
       b) api.key = <api_key>
       c) api.secret = <secret_key>
 ## current architecture
-![structurizr-90179-eLearn components](https://github.com/erykov1/eLearn/assets/62502523/82693536-bfd9-4d1f-a186-70208406ff7a)
+
+![structurizr-90179-eLearn components (1)](https://github.com/erykov1/eLearn/assets/62502523/1c857a8d-ed6c-4f3b-90ae-3196467c519e)
 
    
 ## release 1.1.0
