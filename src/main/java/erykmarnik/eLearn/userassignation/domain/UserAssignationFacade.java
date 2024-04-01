@@ -3,7 +3,9 @@ package erykmarnik.eLearn.userassignation.domain;
 import erykmarnik.eLearn.quiz.domain.QuizFacade;
 import erykmarnik.eLearn.user.domain.UserFacade;
 import erykmarnik.eLearn.userassignation.dto.CreateUserAssignationDto;
+import erykmarnik.eLearn.userassignation.dto.UserAssignationCreatedEvent;
 import erykmarnik.eLearn.userassignation.dto.UserAssignationDto;
+import erykmarnik.eLearn.userassignation.dto.UserStartedEvent;
 import erykmarnik.eLearn.userassignation.exception.UserAlreadyAssignedException;
 import erykmarnik.eLearn.userassignation.exception.UserAssignationNotFoundException;
 import erykmarnik.eLearn.utils.InstantProvider;
@@ -25,6 +27,7 @@ public class UserAssignationFacade {
   UserFacade userFacade;
   QuizFacade quizFacade;
   InstantProvider instantProvider;
+  UserAssignationEventPublisher userAssignationEventPublisher;
 
   public UserAssignationDto createAssignation(CreateUserAssignationDto createUserAssignation) {
     userFacade.checkIfExists(createUserAssignation.getUserId());
@@ -35,6 +38,8 @@ public class UserAssignationFacade {
       throw new UserAlreadyAssignedException("User is already assigned");
     });
     log.info("creating assignation with user {} to object {}", createUserAssignation.getUserId(), createUserAssignation.getLearningObjectId());
+    userAssignationEventPublisher.emmitUserAssignationCreatedEvent(new UserAssignationCreatedEvent(createUserAssignation.getUserId(),
+        createUserAssignation.getLearningObjectId()));
     return userAssignationRepository.save(userAssignationCreator.createUserAssignation(createUserAssignation)).dto();
   }
 
@@ -42,6 +47,8 @@ public class UserAssignationFacade {
     UserAssignation userAssignation = userAssignationRepository.findUserAssignationById(id)
         .orElseThrow(() -> new UserAssignationNotFoundException("User assignation not found"));
     log.info("changing object {} status to in progress", id);
+    userAssignationEventPublisher.emmitUserStartedLearningObjectEvent(new UserStartedEvent(userAssignation.dto().getUserId(),
+        userAssignation.dto().getLearningObjectId()));
     return userAssignationRepository.save(userAssignation.changeToInProgress()).dto();
   }
 

@@ -17,6 +17,8 @@ import erykmarnik.eLearn.user.dto.CreateUserDto
 import erykmarnik.eLearn.user.dto.UserDto
 import erykmarnik.eLearn.userassignation.dto.CreateUserAssignationDto
 import erykmarnik.eLearn.userassignation.dto.UserAssignationDto
+import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto
+import erykmarnik.eLearn.userresult.dto.UserResultDto
 import org.apache.catalina.User
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletResponse
@@ -33,6 +35,7 @@ class ELearnApi {
   private final QuizAssignationApi quizAssignationApi
   private final UserAssignationApi userAssignationApi
   private final TimeProviderApi timeProviderApi
+  private final UserResultApi userResultApi
 
   ELearnApi(MockMvc mockMvc, ObjectMapper objectMapper) {
     this.userApi = new UserApi(mockMvc, objectMapper)
@@ -41,6 +44,7 @@ class ELearnApi {
     this.quizAssignationApi = new QuizAssignationApi(mockMvc, objectMapper)
     this.userAssignationApi = new UserAssignationApi(mockMvc, objectMapper)
     this.timeProviderApi = new TimeProviderApi(mockMvc, objectMapper)
+    this.userResultApi = new UserResultApi(mockMvc, objectMapper)
   }
 
   UserApi user() {
@@ -65,6 +69,10 @@ class ELearnApi {
 
   TimeProviderApi timeProvider() {
     timeProviderApi
+  }
+
+  UserResultApi userResult() {
+    userResultApi
   }
 
   class UserApi {
@@ -349,6 +357,42 @@ class ELearnApi {
       ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/time/systemClock")
           .contentType(MediaType.APPLICATION_JSON)
       )
+      checkResponse(perform.andReturn().response)
+    }
+  }
+
+  class UserResultApi {
+    private final MockMvc mvc
+    private final ObjectMapper mapper
+
+    UserResultApi(MockMvc mvc, ObjectMapper mapper) {
+      this.mvc = mvc
+      this.mapper = mapper
+    }
+
+    UserResultDto saveUserResultProgressChanged(UUID id, ResultProgressChangedDto resultProgressChanged) {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.put("/api/userResult/{id}", id)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(mapper.writeValueAsString(resultProgressChanged))
+      )
+      checkResponse(perform.andReturn().response)
+      UserResultDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
+          mapper.getTypeFactory().constructType(UserResultDto.class))
+      value
+    }
+
+    List<UserResultDto> getAllUserResults() {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/userResult/all")
+          .contentType(MediaType.APPLICATION_JSON)
+      )
+      checkResponse(perform.andReturn().response)
+      List<UserResultDto> value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
+          mapper.getTypeFactory().constructCollectionType(List.class, UserResultDto.class))
+      value
+    }
+
+    void cleanup() {
+      ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/userResult/cleanup"))
       checkResponse(perform.andReturn().response)
     }
   }

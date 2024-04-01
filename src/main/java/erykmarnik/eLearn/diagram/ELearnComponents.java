@@ -26,6 +26,8 @@ class ELearnComponents {
   Component quizAssignationFacade;
   Component userFacade;
   Component userAssignationFacade;
+  Component userResultFacade;
+  Component userResultController;
 
   ELearnComponents(Container eLearn) {
     questionController = eLearn.addComponent("Question controller");
@@ -39,6 +41,8 @@ class ELearnComponents {
     quizAssignationFacade = eLearn.addComponent("Quiz assignation facade");
     userFacade = eLearn.addComponent("User facade");
     userAssignationFacade = eLearn.addComponent("User assignation facade");
+    userResultFacade = eLearn.addComponent("User result facade");
+    userResultController = eLearn.addComponent("User result controller");
   }
 
   void createUsages(External external) {
@@ -96,6 +100,11 @@ class ELearnComponents {
       external.getStudent().uses(userController, "makes api call to create new student/admin account");
       userController.uses(userFacade, "uses to create new user with student/admin role");
       userFacade.uses(external.getDatabase(), "inserts new user");
+      userResultFacade.uses(userAssignationFacade, "creates or update user result when user is assigned to learning object or make some progress");
+      userResultFacade.uses(external.getDatabase(), "inserts or update user result data");
+      external.getStudent().uses(userResultController, "makes api call to save result from learning object");
+      userResultController.uses(userResultFacade, "updates user result for given learning object");
+      userResultFacade.uses(external.getDatabase(), "updates user result data");
     }
   }
 
@@ -117,6 +126,8 @@ class ELearnComponents {
     contextView.add(eLearnComponents.getQuizAssignationFacade());
     contextView.add(eLearnComponents.getUserFacade());
     contextView.add(eLearnComponents.getUserAssignationFacade());
+    contextView.add(eLearnComponents.getUserResultController());
+    contextView.add(eLearnComponents.getUserResultFacade());
     contextView.add(external.getDatabase());
     contextView.add(external.getGuest());
     contextView.add(external.getStudent());

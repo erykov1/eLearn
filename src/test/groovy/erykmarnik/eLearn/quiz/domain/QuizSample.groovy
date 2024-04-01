@@ -7,9 +7,12 @@ import erykmarnik.eLearn.quiz.dto.QuizDto
 import java.time.Instant
 
 trait QuizSample {
+  static final UUID QUIZ_ID = UUID.fromString("f5909396-2cf9-4a7c-9de5-606914ea6900")
+  static final String JAVA_QUIZ_NAME = "Java quiz"
+
   private static Map<String, Object> DEFAULT_QUIZ_DATA = [
-      quizId: UUID.fromString("f5909396-2cf9-4a7c-9de5-606914ea6900"),
-      quizName: "Java quiz",
+      quizId: QUIZ_ID,
+      quizName: JAVA_QUIZ_NAME,
       createdAt: Instant.now(),
       createdBy: 1L,
       quizDifficulty: QuizDifficultyDto.BEGINNER

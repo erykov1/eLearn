@@ -43,4 +43,8 @@
         <sqlFile path="db/changelog/sql/change-006-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
         <comment>dodanie tabeli przypisan uzytkownika do quizow/obiektow</comment>
     </changeSet>
+    <changeSet id="11" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-007-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli wynikow uzytkownika</comment>
+    </changeSet>
 </databaseChangeLog>

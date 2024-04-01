@@ -7,9 +7,10 @@ import erykmarnik.eLearn.userassignation.dto.CreateUserAssignationDto
 
 trait UserSample {
   static final Long FAKE_USER_ID = 11L
+  static final Long USER_ID = 1L
 
   private static Map<String, Object> DEFAULT_USER_DATA = [
-      userId: 1L,
+      userId: USER_ID,
       username: 'janeDoe',
       password: 'janeDoePswd',
       email: 'janeDoe@gmail.com',
