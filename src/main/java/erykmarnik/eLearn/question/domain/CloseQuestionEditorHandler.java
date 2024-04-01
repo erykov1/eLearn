@@ -18,6 +18,7 @@ class CloseQuestionEditorHandler implements QuestionEditor {
         .answerB(editQuestion.getEditedValues().get("answerB"))
         .answerC(editQuestion.getEditedValues().get("answerC"))
         .answerD(editQuestion.getEditedValues().get("answerD"))
+        .imageLink(editQuestion.getEditedValues().get("imageLink"))
         .build();
     return (CloseQuestion) question;
   }

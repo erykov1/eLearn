@@ -19,4 +19,6 @@ abstract class Question {
   String questionContent;
   @Column(name = "correct_answer")
   String correctAnswer;
+  @Column(name = "image_link")
+  String imageLink;
 }

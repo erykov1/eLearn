@@ -26,8 +26,8 @@ class CloseQuestion extends Question {
 
   @Builder(toBuilder = true)
   public CloseQuestion(Long questionId, String questionContent, String answerA, String answerB,
-                       String answerC, String answerD, String correctAnswer) {
-    super(questionId, questionContent, correctAnswer);
+                       String answerC, String answerD, String correctAnswer, String imageLink) {
+    super(questionId, questionContent, correctAnswer, imageLink);
     this.answerA = answerA;
     this.answerB = answerB;
     this.answerC = answerC;
@@ -43,6 +43,7 @@ class CloseQuestion extends Question {
         .answerC(answerC)
         .answerD(answerD)
         .correctAnswer(super.getCorrectAnswer())
+        .imageLink(super.getImageLink())
         .build();
   }
 }

@@ -18,6 +18,7 @@ class QuestionCreator {
         .answerC(createCloseQuestion.getAnswerC())
         .answerD(createCloseQuestion.getAnswerD())
         .correctAnswer(createCloseQuestion.getCorrectAnswer())
+        .imageLink(ImageLinkValidator.checkIfImageLinkIsValid(createCloseQuestion.getImageLink()))
         .build();
   }
 
@@ -25,6 +26,7 @@ class QuestionCreator {
     return OpenQuestion.builder()
         .questionContent(createOpenQuestion.getQuestionContent())
         .correctAnswer(createOpenQuestion.getCorrectAnswer())
+        .imageLink(ImageLinkValidator.checkIfImageLinkIsValid(createOpenQuestion.getImageLink()))
         .build();
   }
 

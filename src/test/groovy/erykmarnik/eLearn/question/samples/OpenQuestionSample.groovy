@@ -4,10 +4,13 @@ import erykmarnik.eLearn.question.dto.CreateOpenQuestionDto
 import erykmarnik.eLearn.question.dto.OpenQuestionDto
 
 trait OpenQuestionSample {
+  private static final IMAGE_LINK = "https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg"
+
   private static Map<String, Object> DEFAULT_OPEN_QUESTION_DATA = [
       questionId: 12L,
       questionContent: "open question content",
-      correctAnswer: "correct answer"
+      correctAnswer: "correct answer",
+      imageLink: IMAGE_LINK
   ] as Map<String, Object>
 
   OpenQuestionDto createOpenQuestion(Map<String, Object> changes = [:]) {
@@ -16,6 +19,7 @@ trait OpenQuestionSample {
       .questionId(changesWithDefaults.questionId as Long)
       .questionContent(changesWithDefaults.questionContent as String)
       .correctAnswer(changesWithDefaults.correctAnswer as String)
+      .imageLink(changesWithDefaults.imageLink as String)
       .build()
   }
 
@@ -24,6 +28,7 @@ trait OpenQuestionSample {
     CreateOpenQuestionDto.builder()
         .questionContent(changesWithDefaults.questionContent as String)
         .correctAnswer(changesWithDefaults.correctAnswer as String)
+        .imageLink(changesWithDefaults.imageLink as String)
         .build()
   }
 
@@ -31,6 +36,7 @@ trait OpenQuestionSample {
     assert result.questionId == expected.questionId
     assert result.questionContent == expected.questionContent
     assert result.correctAnswer == expected.correctAnswer
+    assert result.imageLink == expected.imageLink
   }
 
   final static long FAKE_QUESTION_ID = 103L

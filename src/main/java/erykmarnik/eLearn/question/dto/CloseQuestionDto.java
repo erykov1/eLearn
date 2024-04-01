@@ -16,4 +16,5 @@ public class CloseQuestionDto {
   String answerC;
   String answerD;
   String correctAnswer;
+  String imageLink;
 }

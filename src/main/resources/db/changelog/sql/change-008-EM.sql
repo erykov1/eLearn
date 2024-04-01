@@ -1,0 +1,5 @@
+ALTER TABLE close_questions
+ADD COLUMN image_link CHARACTER VARYING(255);
+
+ALTER TABLE open_questions
+ADD COLUMN image_link CHARACTER VARYING(255);

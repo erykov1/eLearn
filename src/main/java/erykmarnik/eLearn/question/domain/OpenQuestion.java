@@ -17,8 +17,8 @@ import lombok.experimental.FieldDefaults;
 class OpenQuestion extends Question {
 
   @Builder(toBuilder = true)
-  public OpenQuestion(Long questionId, String questionContent, String correctAnswer) {
-    super(questionId, questionContent, correctAnswer);
+  public OpenQuestion(Long questionId, String questionContent, String correctAnswer, String imageLink) {
+    super(questionId, questionContent, correctAnswer, imageLink);
   }
 
   OpenQuestionDto dto() {
@@ -26,6 +26,7 @@ class OpenQuestion extends Question {
         .questionId(super.getQuestionId())
         .questionContent(super.getQuestionContent())
         .correctAnswer(super.getCorrectAnswer())
+        .imageLink(super.getImageLink())
         .build();
   }
 }

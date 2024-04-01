@@ -12,4 +12,5 @@ public class OpenQuestionDto {
   Long questionId;
   String questionContent;
   String correctAnswer;
+  String imageLink;
 }

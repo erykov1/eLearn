@@ -47,4 +47,8 @@
         <sqlFile path="db/changelog/sql/change-007-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
         <comment>dodanie tabeli wynikow uzytkownika</comment>
     </changeSet>
+    <changeSet id="12" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-008-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie kolumny image_link do pytan otwartych i zamknietych</comment>
+    </changeSet>
 </databaseChangeLog>

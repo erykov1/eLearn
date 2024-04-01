@@ -15,4 +15,5 @@ public class CreateCloseQuestionDto {
   String answerC;
   String answerD;
   String correctAnswer;
+  String imageLink;
 }
