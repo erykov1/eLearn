@@ -24,7 +24,9 @@
 
 ![structurizr-90179-eLearn components (1)](https://github.com/erykov1/eLearn/assets/62502523/1c857a8d-ed6c-4f3b-90ae-3196467c519e)
 
-   
+## release 1.3.0
+  - tracking user results
+  - image link added to questions
 ## release 1.1.0
   - architecture for application
   - user assignations to learning object (current only to quiz)
