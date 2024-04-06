@@ -9,15 +9,21 @@ import erykmarnik.eLearn.question.samples.OpenQuestionSample
 import spock.lang.Unroll
 
 class OpenQuestionAcceptanceSpec extends IntegrationSpec implements OpenQuestionSample, ImageLinkSample {
+  QuestionApiFacade questionApiFacade
+
+  def setup() {
+    questionApiFacade = new QuestionApiFacade(mockMvc, objectMapper)
+  }
+
   def "Should create new open question"() {
     when: "creates new open question"
-      OpenQuestionDto openQuestion = api.question().createOpenQuestion(createNewOpenQuestion(
+      OpenQuestionDto openQuestion = questionApiFacade.createOpenQuestion(createNewOpenQuestion(
           questionContent: "What is the capital of France?",
           correctAnswer: "Paris",
           imageLink: FRANCE_IMAGE_LINK
       ))
     then: "open question is created"
-      OpenQuestionDto result = api.question().getOpenQuestion(openQuestion.questionId)
+      OpenQuestionDto result = questionApiFacade.getOpenQuestion(openQuestion.questionId)
       equalsOpenQuestions([result], [createOpenQuestion(
           questionId: result.questionId, questionContent:  "What is the capital of France?", correctAnswer: "Paris", imageLink: FRANCE_IMAGE_LINK
       )])
@@ -26,13 +32,13 @@ class OpenQuestionAcceptanceSpec extends IntegrationSpec implements OpenQuestion
   @Unroll
   def "Should create new question when there is already question with the same content"() {
     given: "creates open question"
-      api.question().createOpenQuestion(createNewOpenQuestion(
+      questionApiFacade.createOpenQuestion(createNewOpenQuestion(
           questionContent: questionContent,
           correctAnswer: correctAnswer,
           imageLink: imageLink
       ))
     when: "creates new open question with the same field"
-      OpenQuestionDto newOpenQuestion = api.question().createOpenQuestion(createNewOpenQuestion(
+      OpenQuestionDto newOpenQuestion = questionApiFacade.createOpenQuestion(createNewOpenQuestion(
           questionContent: questionContent,
           correctAnswer: correctAnswer,
           imageLink: imageLink
@@ -52,13 +58,13 @@ class OpenQuestionAcceptanceSpec extends IntegrationSpec implements OpenQuestion
   @Unroll
   def "Should edit question"() {
     given: "there is open question"
-      OpenQuestionDto openQuestion = api.question().createOpenQuestion(createNewOpenQuestion(
+      OpenQuestionDto openQuestion = questionApiFacade.createOpenQuestion(createNewOpenQuestion(
           questionContent: "What is the capital of France?",
           correctAnswer: "Paris",
           imageLink: imageLink
       ))
     when: "edits question field"
-      OpenQuestionDto openQuestionEdited = api.question().editOpenQuestion(new EditQuestionDto(Map.of("questionContent",
+      OpenQuestionDto openQuestionEdited = questionApiFacade.editOpenQuestion(new EditQuestionDto(Map.of("questionContent",
           questionContent,"correctAnswer", correctAnswer, "imageLink", imageLink),
           EditQuestionType.OPEN_QUESTION), openQuestion.questionId)
     then: "question is edited and has new field value"
@@ -74,6 +80,6 @@ class OpenQuestionAcceptanceSpec extends IntegrationSpec implements OpenQuestion
   }
 
   def cleanup() {
-    api.question().cleanup()
+    questionApiFacade.cleanup()
   }
 }

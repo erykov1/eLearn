@@ -9,9 +9,15 @@ import erykmarnik.eLearn.question.samples.ImageLinkSample
 import spock.lang.Unroll
 
 class CloseQuestionAcceptanceSpec extends IntegrationSpec implements CloseQuestionSample, ImageLinkSample {
+  QuestionApiFacade questionApiFacade
+
+  def setup() {
+    questionApiFacade = new QuestionApiFacade(mockMvc, objectMapper)
+  }
+
   def "Should create new close question"() {
     when: "creates new close question"
-      CloseQuestionDto closeQuestion = api.question().createCloseQuestion(createNewCloseQuestion(
+      CloseQuestionDto closeQuestion = questionApiFacade.createCloseQuestion(createNewCloseQuestion(
           questionContent: "What is the capital of France?",
           answerA: "Warsaw",
           answerB: "Paris",
@@ -21,7 +27,7 @@ class CloseQuestionAcceptanceSpec extends IntegrationSpec implements CloseQuesti
           imageLink: FRANCE_IMAGE_LINK
       ))
     then: "close question is created"
-      CloseQuestionDto result = api.question().getCloseQuestion(closeQuestion.questionId)
+      CloseQuestionDto result = questionApiFacade.getCloseQuestion(closeQuestion.questionId)
       equalsCloseQuestions([result], [createCloseQuestion(
           questionId: result.questionId, questionContent:  "What is the capital of France?", answerA: "Warsaw", answerB: "Paris",
           answerC: "Madrid", answerD: "Berlin", correctAnswer: "Paris", imageLink: FRANCE_IMAGE_LINK
@@ -31,7 +37,7 @@ class CloseQuestionAcceptanceSpec extends IntegrationSpec implements CloseQuesti
   @Unroll
   def "Should create new question when there is already question with the same content"() {
     given: "creates close question"
-      api.question().createCloseQuestion(createNewCloseQuestion(
+      questionApiFacade.createCloseQuestion(createNewCloseQuestion(
           questionContent: "What is the capital of France?",
           answerA: "Warsaw",
           answerB: "Paris",
@@ -41,7 +47,7 @@ class CloseQuestionAcceptanceSpec extends IntegrationSpec implements CloseQuesti
           imageLink: imageLink
       ))
     when: "creates new close question with the same field"
-      CloseQuestionDto newCloseQuestion = api.question().createCloseQuestion(createNewCloseQuestion(
+      CloseQuestionDto newCloseQuestion = questionApiFacade.createCloseQuestion(createNewCloseQuestion(
           questionContent: questionContent,
           answerA: answerA,
           answerB: answerB,
@@ -66,7 +72,7 @@ class CloseQuestionAcceptanceSpec extends IntegrationSpec implements CloseQuesti
   @Unroll
   def "Should edit question"() {
     given: "there is close question"
-      CloseQuestionDto closeQuestion = api.question().createCloseQuestion(createNewCloseQuestion(
+      CloseQuestionDto closeQuestion = questionApiFacade.createCloseQuestion(createNewCloseQuestion(
           questionContent: "What is the capital of France?",
           answerA: "Warsaw",
           answerB: "Paris",
@@ -76,7 +82,7 @@ class CloseQuestionAcceptanceSpec extends IntegrationSpec implements CloseQuesti
           imageLink: imageLink
       ))
     when: "edits question field"
-      CloseQuestionDto closeQuestionEdited = api.question().editCloseQuestion(new EditQuestionDto(Map.of("questionContent", questionContent, "answerA", answerA, "answerB", answerB,
+      CloseQuestionDto closeQuestionEdited = questionApiFacade.editCloseQuestion(new EditQuestionDto(Map.of("questionContent", questionContent, "answerA", answerA, "answerB", answerB,
           "answerC", answerC, "answerD", answerD, "correctAnswer", correctAnswer, "imageLink", imageLink), EditQuestionType.CLOSE_QUESTION), closeQuestion.questionId)
     then: "question is edited and has new field value"
       equalsCloseQuestions([closeQuestionEdited], [createCloseQuestion(questionId: closeQuestionEdited.questionId, questionContent: questionContent,
@@ -91,6 +97,6 @@ class CloseQuestionAcceptanceSpec extends IntegrationSpec implements CloseQuesti
   }
 
   def cleanup() {
-    api.question().cleanup()
+    questionApiFacade.cleanup()
   }
 }

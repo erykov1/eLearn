@@ -1,6 +1,7 @@
 package erykmarnik.eLearn.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import erykmarnik.eLearn.integration.ELearnApi
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.web.servlet.MockMvc
@@ -9,7 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
 import java.time.Instant
 
-class TimeProviderApiFacade {
+class TimeProviderApiFacade extends ELearnApi {
   private final MockMvc mvc
   private final ObjectMapper mapper
 
@@ -31,11 +32,5 @@ class TimeProviderApiFacade {
         .contentType(MediaType.APPLICATION_JSON)
     )
     checkResponse(perform.andReturn().response)
-  }
-
-  private static void checkResponse(MockHttpServletResponse response) {
-    if(response.status != 200) {
-      throw new RuntimeException(response.getIncludedUrl() + " failed with status " + response.status)
-    }
   }
 }

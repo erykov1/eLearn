@@ -27,15 +27,13 @@ class IntegrationSpec extends Specification {
   }
   @Autowired
   protected WebApplicationContext context
-  private MockMvc mockMvc
+  protected MockMvc mockMvc
   @Autowired
-  private ObjectMapper objectMapper
-  ELearnApi api
+  protected ObjectMapper objectMapper
 
   def setup() {
     mockMvc = MockMvcBuilders.webAppContextSetup(context)
         .apply(SecurityMockMvcConfigurers.springSecurity())
         .build()
-    api = new ELearnApi(mockMvc, objectMapper)
   }
 }
