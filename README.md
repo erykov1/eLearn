@@ -22,7 +22,7 @@
       c) api.secret = <secret_key>
 ## current architecture
 
-![structurizr-90179-eLearn components (1)](https://github.com/erykov1/eLearn/assets/62502523/1c857a8d-ed6c-4f3b-90ae-3196467c519e)
+![structurizr-90179-eLearn components (2)](https://github.com/erykov1/eLearn/assets/62502523/370e0e45-8da4-453a-beec-4ce32e74f233)
 
 ## release 1.3.0
   - tracking user results
