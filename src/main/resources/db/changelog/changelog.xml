@@ -51,4 +51,20 @@
         <sqlFile path="db/changelog/sql/change-008-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
         <comment>dodanie kolumny image_link do pytan otwartych i zamknietych</comment>
     </changeSet>
+    <changeSet id="13" author="e.marnik">
+        <createSequence sequenceName="notification_sequence" incrementBy="1" startValue="1"/>
+        <comment>sekwencja id dla powiadomien</comment>
+    </changeSet>
+    <changeSet id="14" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-009-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli zapisan do powiadomien - news</comment>
+    </changeSet>
+    <changeSet id="15" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-010-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli przechowujacej utworzone obiekty szkolen (obecnie tylko quizy)</comment>
+    </changeSet>
+    <changeSet id="16" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-011-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie tabeli dla powiadomien</comment>
+    </changeSet>
 </databaseChangeLog>

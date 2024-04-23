@@ -4,12 +4,14 @@ import erykmarnik.eLearn.quiz.dto.QuizDifficultyDto
 import erykmarnik.eLearn.quiz.dto.QuizDto
 import erykmarnik.eLearn.quiz.exception.QuizNotFoundException
 import erykmarnik.eLearn.utils.InstantProvider
+import org.springframework.context.ApplicationEventPublisher
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class QuizSpec extends Specification implements QuizSample {
   InstantProvider instantProvider = new InstantProvider()
-  QuizFacade quizFacade = new QuizConfiguration().quizFacade(new QuizCreator(instantProvider))
+  ApplicationEventPublisher applicationEventPublisher = Stub()
+  QuizFacade quizFacade = new QuizConfiguration().quizFacade(new QuizCreator(instantProvider), applicationEventPublisher)
 
   def "Should create new quiz"() {
     when: "creates new quiz"

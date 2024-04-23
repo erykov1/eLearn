@@ -1,16 +1,17 @@
-package erykmarnik.eLearn.notification.email.dto;
+package erykmarnik.eLearn.quiz.dto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.UUID;
+
 @Builder
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CreateEmailDto {
-  Long sendForUser;
-  String userEmail;
-  String text;
-  String subject;
+public class CreatedLearningObjectEvent {
+  UUID learningObjectId;
+  String learningObjectName;
+  QuizDifficultyDto learningObjectType;
 }

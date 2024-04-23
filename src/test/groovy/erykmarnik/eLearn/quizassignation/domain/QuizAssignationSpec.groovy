@@ -14,6 +14,7 @@ import erykmarnik.eLearn.quizassignation.dto.QuizAssignationDto
 import erykmarnik.eLearn.quizassignation.samples.QuizAssignationSample
 import erykmarnik.eLearn.user.domain.UserSample
 import erykmarnik.eLearn.utils.InstantProvider
+import org.springframework.context.ApplicationEventPublisher
 import spock.lang.Specification
 import erykmarnik.eLearn.quiz.exception.QuizNotFoundException
 
@@ -22,7 +23,8 @@ class QuizAssignationSpec extends Specification implements QuizSample, UserSampl
   private long closeQuestionId
   private long openQuestionId
   InstantProvider instantProvider = new InstantProvider()
-  QuizFacade quizFacade = new QuizConfiguration().quizFacade(new QuizCreator(instantProvider))
+  ApplicationEventPublisher applicationEventPublisher = Stub()
+  QuizFacade quizFacade = new QuizConfiguration().quizFacade(new QuizCreator(instantProvider), applicationEventPublisher)
   QuestionFacade questionFacade = new QuestionConfiguration().questionFacade()
   QuizAssignationCreator quizAssignationCreator = new QuizAssignationCreator(instantProvider)
   QuizAssignationFacade quizAssignationFacade = new QuizAssignationConfiguration().quizAssignationFacade(quizFacade, questionFacade, quizAssignationCreator)

@@ -15,8 +15,8 @@ import spock.lang.Specification
 
 class UserAssignationBaseSpec extends Specification implements InstantSample, UserSample, QuizSample, UserAssignationSample {
   InstantProvider instantProvider = new InstantProvider()
-  QuizFacade quizFacade = new QuizConfiguration().quizFacade(new QuizCreator(instantProvider))
-  UserFacade userFacade = new UserConfiguration().userFacade()
   ApplicationEventPublisher applicationEventPublisher = Stub()
+  QuizFacade quizFacade = new QuizConfiguration().quizFacade(new QuizCreator(instantProvider), applicationEventPublisher)
+  UserFacade userFacade = new UserConfiguration().userFacade()
   UserAssignationFacade userAssignationFacade = new UserAssignationConfiguration().userAssignationFacade(instantProvider, userFacade, quizFacade, applicationEventPublisher)
 }

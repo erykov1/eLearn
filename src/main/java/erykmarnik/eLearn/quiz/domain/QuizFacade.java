@@ -1,15 +1,13 @@
 package erykmarnik.eLearn.quiz.domain;
 
-import erykmarnik.eLearn.quiz.dto.CreateQuizDto;
-import erykmarnik.eLearn.quiz.dto.NewQuizNameDto;
-import erykmarnik.eLearn.quiz.dto.QuizDifficultyDto;
-import erykmarnik.eLearn.quiz.dto.QuizDto;
+import erykmarnik.eLearn.quiz.dto.*;
 import erykmarnik.eLearn.quiz.exception.QuizNotFoundException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,21 +18,31 @@ import java.util.stream.Collectors;
 public class QuizFacade {
   QuizRepository quizRepository;
   QuizCreator quizCreator;
+  QuizEventPublisher quizEventPublisher;
 
   @Autowired
-  public QuizFacade(QuizRepository quizRepository, QuizCreator quizCreator) {
+  public QuizFacade(QuizRepository quizRepository, QuizCreator quizCreator, QuizEventPublisher quizEventPublisher) {
     this.quizRepository = quizRepository;
     this.quizCreator = quizCreator;
+    this.quizEventPublisher = quizEventPublisher;
   }
 
   public QuizDto createQuiz(CreateQuizDto createQuiz) {
     log.info("saving new quiz {}", createQuiz.getQuizName());
-    return quizRepository.save(quizCreator.createQuiz(createQuiz)).dto();
+    Quiz quiz = quizCreator.createQuiz(createQuiz);
+    CreatedLearningObjectEvent createdLearningObjectEvent = CreatedLearningObjectEvent.builder()
+        .learningObjectId(quiz.dto().getQuizId())
+        .learningObjectName(quiz.dto().getQuizName())
+        .learningObjectType(quiz.dto().getQuizDifficulty())
+        .build();
+    quizEventPublisher.emmitLearningObject(createdLearningObjectEvent);
+    return quizRepository.save(quiz).dto();
   }
 
   public QuizDto changeQuizDifficulty(UUID quizId, QuizDifficultyDto quizDifficulty) {
     Quiz quiz = quizRepository.findByQuizId(quizId).orElseThrow(() -> new QuizNotFoundException("Quiz not found"));
     log.info("changing quiz difficulty from {} to {}", quiz.dto().getQuizDifficulty().name(), quizDifficulty.name());
+    quizEventPublisher.emmitChangedDifficulty(new ChangedDifficultyEvent(quizDifficulty, quizId));
     return quizRepository.save(quiz.changeQuizDifficulty(quizDifficulty)).dto();
   }
 
@@ -49,6 +57,7 @@ public class QuizFacade {
     quiz = quiz.toBuilder()
         .quizName(quizName)
         .build();
+    quizEventPublisher.emmitChangeQuizName(new ChangedLearningObjectNameEvent(quizName, quizId));
     return quizRepository.save(quiz).dto();
   }
 
