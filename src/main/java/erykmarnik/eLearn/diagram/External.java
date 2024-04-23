@@ -14,12 +14,14 @@ class External {
   Person admin;
   Person student;
   SoftwareSystem database;
+  SoftwareSystem mail;
 
   External(Model model) {
     guest = model.addPerson("guest", "user not logged");
     admin = model.addPerson("admin", "eLearn admin");
     student = model.addPerson("student", "user with basic role");
     database = model.addSoftwareSystem("database", "PostgreSQL database");
+    mail = model.addSoftwareSystem("mail", "mail service");
   }
 
   SoftwareSystem createUsages(SoftwareSystem eLearn) {
@@ -27,6 +29,7 @@ class External {
     admin.uses(eLearn, "creates quiz, question, assigns questions to learning objects, deletes question");
     student.uses(eLearn, "assigns to quiz, solves quiz");
     database.uses(eLearn, "data operation");
+    mail.uses(eLearn, "sends emails");
     return eLearn;
   }
 }

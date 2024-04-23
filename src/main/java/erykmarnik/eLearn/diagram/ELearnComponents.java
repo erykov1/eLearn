@@ -28,6 +28,9 @@ class ELearnComponents {
   Component userAssignationFacade;
   Component userResultFacade;
   Component userResultController;
+  Component notificationFacade;
+  Component notificationController;
+  Component notificationScheduler;
 
   ELearnComponents(Container eLearn) {
     questionController = eLearn.addComponent("Question controller");
@@ -43,6 +46,9 @@ class ELearnComponents {
     userAssignationFacade = eLearn.addComponent("User assignation facade");
     userResultFacade = eLearn.addComponent("User result facade");
     userResultController = eLearn.addComponent("User result controller");
+    notificationFacade = eLearn.addComponent("Notification facade");
+    notificationController = eLearn.addComponent("Notification controller");
+    notificationScheduler = eLearn.addComponent("Notification scheduler");
   }
 
   void createUsages(External external) {
@@ -60,12 +66,15 @@ class ELearnComponents {
       external.getAdmin().uses(quizController, "makes api call to create quiz");
       quizController.uses(quizFacade, "uses to create new quiz");
       quizFacade.uses(external.getDatabase(), "inserts new quiz");
+      notificationFacade.uses(quizFacade, "listener for new quiz");
       external.getAdmin().uses(quizController, "makes api call to change quiz name");
       quizController.uses(quizFacade, "uses to change quiz name");
       quizFacade.uses(external.getDatabase(), "updates quiz name");
+      notificationFacade.uses(quizFacade, "listener for quiz name change");
       external.getAdmin().uses(quizController, "makes api call to change quiz difficulty");
       quizController.uses(quizFacade, "uses to change quiz difficulty");
       quizFacade.uses(external.getDatabase(), "changes quiz difficulty");
+      notificationFacade.uses(quizFacade, "listener for quiz difficulty change");
       external.getAdmin().uses(questionController, "makes api call to create question");
       questionController.uses(questionFacade, "uses to create question");
       questionFacade.uses(external.getDatabase(), "inserts new question data");
@@ -105,6 +114,16 @@ class ELearnComponents {
       external.getStudent().uses(userResultController, "makes api call to save result from learning object");
       userResultController.uses(userResultFacade, "updates user result for given learning object");
       userResultFacade.uses(external.getDatabase(), "updates user result data");
+      external.getStudent().uses(notificationController, "makes api call to create notification");
+      notificationController.uses(notificationFacade, "uses to create notification");
+      notificationFacade.uses(external.getDatabase(), "inserts new notification");
+      notificationScheduler.uses(notificationFacade, "sends notifications in proper time compartment");
+      notificationFacade.uses(external.getMail(), "sends emails");
+      notificationFacade.uses(external.getDatabase(), "inserts new notification data");
+      external.getStudent().uses(notificationController, "makes api call to unroll from news");
+      notificationController.uses(notificationFacade, "uses to unroll from news");
+      notificationFacade.uses(external.getDatabase(), "unrolls from news");
+      external.getStudent().uses(external.getMail(), "receives mails");
     }
   }
 
@@ -128,9 +147,13 @@ class ELearnComponents {
     contextView.add(eLearnComponents.getUserAssignationFacade());
     contextView.add(eLearnComponents.getUserResultController());
     contextView.add(eLearnComponents.getUserResultFacade());
+    contextView.add(eLearnComponents.getNotificationFacade());
+    contextView.add(eLearnComponents.getNotificationController());
+    contextView.add(eLearnComponents.getNotificationScheduler());
     contextView.add(external.getDatabase());
     contextView.add(external.getGuest());
     contextView.add(external.getStudent());
     contextView.add(external.getAdmin());
+    contextView.add(external.getMail());
   }
 }
