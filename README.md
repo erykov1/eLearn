@@ -12,6 +12,15 @@
     - spring.liquibase.change-log=classpath:/db/changelog/changelog.xml
     - rsa.private-key=classpath:certs/private.pem
     - rsa.public-key=classpath:certs/public.pem
+    - spring.mail.username=<mail>
+    - spring.mail.properties.mail.smtp.starttls.required=true
+    - spring.mail.host=smtp.gmail.com
+    - spring.mail.port=587
+    - spring.mail.password=<mail_password>
+    - spring.mail.properties.mail.smtp.auth=true
+    - spring.mail.properties.mail.transport.protocol=smtp
+    - spring.mail.properties.mail.smtp.starttls.enable=true
+    - notification.scheduler.enabled=true (or false if you want to disable scheduler)
    
   * to launch structurizr and generate diagram:
     - create account https://structurizr.com/signup
