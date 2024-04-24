@@ -33,6 +33,10 @@
 
 ![structurizr-90179-eLearn components (2)](https://github.com/erykov1/eLearn/assets/62502523/370e0e45-8da4-453a-beec-4ce32e74f233)
 
+## release 1.4.0
+  - notification for user with two types: reminder and news
+  - user is able to enroll for news about created learning objects (currently only quiz)
+  - user can create a reminder that will be sent to his email 
 ## release 1.3.0
   - tracking user results
   - image link added to questions
