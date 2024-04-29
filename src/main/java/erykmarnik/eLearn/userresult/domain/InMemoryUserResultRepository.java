@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.FluentQuery;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 class InMemoryUserResultRepository implements UserResultRepository {
   Map<UUID, UserResult> table = new ConcurrentHashMap<>();
@@ -174,5 +175,13 @@ class InMemoryUserResultRepository implements UserResultRepository {
         .filter(result -> result.dto().getUserId().equals(userId))
         .filter(result -> result.dto().getLearningObjectId().equals(learningObjectId))
         .findFirst();
+  }
+
+  @Override
+  public Page<UserResult> findAllUserResultsByUserResultVisibilityType(UserResultVisibilityType userResultVisibilityType, Pageable pageable) {
+    List<UserResult> results = table.values().stream()
+        .filter(userResult -> userResult.dto().getUserResultVisibilityType().equals(userResultVisibilityType.dto()))
+        .toList();
+    return new PageImpl<>(new ArrayList<>(results), pageable, results.size());
   }
 }

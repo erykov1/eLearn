@@ -11,12 +11,16 @@ import erykmarnik.eLearn.user.dto.UserDto
 import erykmarnik.eLearn.userassignation.acceptance.UserAssignationApiFacade
 import erykmarnik.eLearn.userassignation.dto.UserAssignationDto
 import erykmarnik.eLearn.userassignation.samples.UserAssignationSample
+import erykmarnik.eLearn.userresult.dto.PageInfoDto
 import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto
 import erykmarnik.eLearn.userresult.dto.ResultTypeDto
 import erykmarnik.eLearn.userresult.dto.UserResultDto
+import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto
 import erykmarnik.eLearn.userresult.samples.UserResultSample
 import erykmarnik.eLearn.utils.TimeProviderApiFacade
 import erykmarnik.eLearn.utils.samples.InstantSample
+import org.springdoc.core.converters.models.Pageable
+import org.springframework.data.domain.PageRequest
 
 class UserResultAcceptanceSpec extends IntegrationSpec implements UserResultSample, InstantSample, UserSample, QuizSample,
     UserAssignationSample {
@@ -60,7 +64,7 @@ class UserResultAcceptanceSpec extends IntegrationSpec implements UserResultSamp
     then: "there is new user result for $JAMES"
       List<UserResultDto> result = userResultApiFacade.getAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: 0, learningObjectId: javaQuiz.quizId, completedAt: null,
-          userId: james.userId, startedAt: null)])
+          userId: james.userId, startedAt: null, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should update user result with start date when user starts learning object"() {
@@ -72,7 +76,7 @@ class UserResultAcceptanceSpec extends IntegrationSpec implements UserResultSamp
     then: "user result contains started date"
       List<UserResultDto> result = userResultApiFacade.getAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: 0, learningObjectId: javaQuiz.quizId, completedAt: null,
-          userId: james.userId, startedAt: NOW)])
+          userId: james.userId, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should update user result with result when user starts learning object and want to save it"() {
@@ -86,7 +90,7 @@ class UserResultAcceptanceSpec extends IntegrationSpec implements UserResultSamp
     then: "user result contains started date and result"
       List<UserResultDto> result = userResultApiFacade.getAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: 12, learningObjectId: javaQuiz.quizId, completedAt: null,
-          userId: james.userId, startedAt: NOW)])
+          userId: james.userId, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should update user result with completed date when user completes learning object"() {
@@ -100,7 +104,7 @@ class UserResultAcceptanceSpec extends IntegrationSpec implements UserResultSamp
     then: "user result contains started date, result and completed date"
       List<UserResultDto> result = userResultApiFacade.getAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: 16, learningObjectId: javaQuiz.quizId, completedAt: NOW,
-          userId: james.userId, startedAt: NOW)])
+          userId: james.userId, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should update user result with completed date when user completes learning object again"() {
@@ -117,6 +121,28 @@ class UserResultAcceptanceSpec extends IntegrationSpec implements UserResultSamp
     then: "user result contains started date, result and completed date with time $WEEK_LATER"
       List<UserResultDto> result = userResultApiFacade.getAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: 16, learningObjectId: javaQuiz.quizId, completedAt: WEEK_LATER,
-          userId: james.userId, startedAt: NOW)])
+          userId: james.userId, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
+  }
+
+  def "Should not get user result if it is private"() {
+    given: "$JAMES is assigned to quiz $javaQuiz"
+      userAssignationApiFacade.createUserAssignation(createNewUserAssignation(userId: james.userId, learningObjectId: javaQuiz.quizId))
+    expect: "there are no public user results"
+      userResultApiFacade.getPublicUserResults(PageInfoDto.DEFAULT) == []
+  }
+
+  def "Should get user result it user change result visibility to public"() {
+    given: "$JAMES is assigned to quiz $javaQuiz"
+      userAssignationApiFacade.createUserAssignation(createNewUserAssignation(userId: james.userId, learningObjectId: javaQuiz.quizId))
+    when: "$JAMES changes result visibility to public"
+      userResultApiFacade.changeUserResultVisibility(userResultApiFacade.getAllUserResults()[0].id, UserResultVisibilityTypeDto.PUBLIC)
+    then: "gets $JAMES result as public result"
+      List<UserResultDto> result = userResultApiFacade.getPublicUserResults(PageInfoDto.DEFAULT)
+      equalsUserResult(result, [createUserResult(id: result[0].id, result: 0, learningObjectId: javaQuiz.quizId, completedAt: null,
+          userId: james.userId, startedAt: null, userResultVisibilityType: UserResultVisibilityTypeDto.PUBLIC)])
+    when: "$JAMES changes result visibility to private"
+      userResultApiFacade.changeUserResultVisibility(userResultApiFacade.getAllUserResults()[0].id, UserResultVisibilityTypeDto.PRIVATE)
+    then: "there are no public results"
+      userResultApiFacade.getPublicUserResults(PageInfoDto.DEFAULT) == []
   }
 }

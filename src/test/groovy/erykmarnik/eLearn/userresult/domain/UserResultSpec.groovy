@@ -4,11 +4,15 @@ import erykmarnik.eLearn.quiz.domain.QuizSample
 import erykmarnik.eLearn.user.domain.UserSample
 import erykmarnik.eLearn.userassignation.dto.UserAssignationCreatedEvent
 import erykmarnik.eLearn.userassignation.dto.UserStartedEvent
+import erykmarnik.eLearn.userresult.dto.PageInfoDto
 import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto
 import erykmarnik.eLearn.userresult.dto.ResultTypeDto
+import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto
+import erykmarnik.eLearn.userresult.exception.UserResultNotFoundException
 import erykmarnik.eLearn.userresult.samples.UserResultSample
 import erykmarnik.eLearn.utils.InstantProvider
 import erykmarnik.eLearn.utils.samples.InstantSample
+import org.springframework.data.domain.Pageable
 import spock.lang.Specification
 
 class UserResultSpec extends Specification implements InstantSample, UserResultSample, UserSample, QuizSample {
@@ -23,10 +27,10 @@ class UserResultSpec extends Specification implements InstantSample, UserResultS
   def "Should create user result"() {
     when: "creates new user result"
       userResultFacade.onUserResultInitialization(new UserAssignationCreatedEvent(USER_ID, QUIZ_ID))
-    then: "result is created with result equals 0, completedAt equals null and startedAt equals null"
+    then: "result is initialized"
       def result = userResultFacade.findAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: 0, learningObjectId: QUIZ_ID, completedAt: null,
-          userId: USER_ID, startedAt: null)])
+          userId: USER_ID, startedAt: null, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should update user result with start date when user starts learning object"() {
@@ -37,7 +41,7 @@ class UserResultSpec extends Specification implements InstantSample, UserResultS
     then: "user result contains started date"
       def result = userResultFacade.findAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: 0, learningObjectId: QUIZ_ID, completedAt: null,
-          userId: USER_ID, startedAt: NOW)])
+          userId: USER_ID, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should update user result with result when user starts learning object and want to save it"() {
@@ -51,7 +55,7 @@ class UserResultSpec extends Specification implements InstantSample, UserResultS
     then: "user result contains started date"
     def result = userResultFacade.findAllUserResults()
     equalsUserResult(result, [createUserResult(id: result[0].id, result: COMPLETED_RESULT, learningObjectId: QUIZ_ID,
-        userId: USER_ID, startedAt: NOW)])
+        userId: USER_ID, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should update user result with completed date when user completes learning object"() {
@@ -65,7 +69,7 @@ class UserResultSpec extends Specification implements InstantSample, UserResultS
     then: "user result contains started date and completed date with result"
       def result = userResultFacade.findAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: COMPLETED_RESULT, learningObjectId: QUIZ_ID, completedAt: NOW,
-          userId: USER_ID, startedAt: NOW)])
+          userId: USER_ID, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should update user result with completed date when user completes learning object again"() {
@@ -83,7 +87,7 @@ class UserResultSpec extends Specification implements InstantSample, UserResultS
     then: "user result contains started date and new completed date with result"
       def result = userResultFacade.findAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: COMPLETED_RESULT, learningObjectId: QUIZ_ID, completedAt: WEEK_LATER,
-          userId: USER_ID, startedAt: NOW)])
+          userId: USER_ID, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
   }
 
   def "Should not update user result with start date when user starts learning object again"() {
@@ -97,6 +101,46 @@ class UserResultSpec extends Specification implements InstantSample, UserResultS
     then: "user result contains started date"
       def result = userResultFacade.findAllUserResults()
       equalsUserResult(result, [createUserResult(id: result[0].id, result: 0, learningObjectId: QUIZ_ID, completedAt: null,
-        userId: USER_ID, startedAt: NOW)])
+        userId: USER_ID, startedAt: NOW, userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE)])
+  }
+
+  def "Should not get user result if it has private visibility"() {
+    given: "creates new user result"
+      userResultFacade.onUserResultInitialization(new UserAssignationCreatedEvent(USER_ID, QUIZ_ID))
+    expect: "there are no public user results"
+      userResultFacade.getPublicUserResults(PageInfoDto.DEFAULT).toList() == []
+  }
+
+  def "Should change user result visibility"() {
+    given: "creates new user result"
+      userResultFacade.onUserResultInitialization(new UserAssignationCreatedEvent(USER_ID, QUIZ_ID))
+    when: "user changes user result visibility"
+      userResultFacade.changeUserResultVisibility(userResultFacade.findAllUserResults()[0].id, UserResultVisibilityTypeDto.PUBLIC)
+    then: "gets user result with public visibility"
+      def result = userResultFacade.getPublicUserResults(PageInfoDto.DEFAULT)
+      equalsUserResult(result as List, [createUserResult(id: result[0].id, result: 0, learningObjectId: QUIZ_ID, completedAt: null,
+          userId: USER_ID, startedAt: null, userResultVisibilityType: UserResultVisibilityTypeDto.PUBLIC)])
+  }
+
+  def "Should get error if try to change user result visibility that does not exist"() {
+    when: "changes user result visibility that does not exist"
+      userResultFacade.changeUserResultVisibility(UUID.randomUUID(), UserResultVisibilityTypeDto.PUBLIC)
+    then: "gets error of not found user result"
+      thrown(UserResultNotFoundException)
+  }
+
+  def "Should not get user result if user changes visibility to private"() {
+    given: "creates new user result"
+      userResultFacade.onUserResultInitialization(new UserAssignationCreatedEvent(USER_ID, QUIZ_ID))
+    when: "user changes user result visibility"
+      userResultFacade.changeUserResultVisibility(userResultFacade.findAllUserResults()[0].id, UserResultVisibilityTypeDto.PUBLIC)
+    then: "gets user result with public visibility"
+      def result = userResultFacade.getPublicUserResults(PageInfoDto.DEFAULT)
+      equalsUserResult(result as List, [createUserResult(id: result[0].id, result: 0, learningObjectId: QUIZ_ID, completedAt: null,
+          userId: USER_ID, startedAt: null, userResultVisibilityType: UserResultVisibilityTypeDto.PUBLIC)])
+    when: "user changed user result visibility to private"
+      userResultFacade.changeUserResultVisibility(userResultFacade.findAllUserResults()[0].id, UserResultVisibilityTypeDto.PRIVATE)
+    then: "there are no public user results"
+      userResultFacade.getPublicUserResults(PageInfoDto.DEFAULT).toList() == []
   }
 }

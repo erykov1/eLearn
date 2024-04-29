@@ -2,8 +2,10 @@ package erykmarnik.eLearn.userresult.domain;
 
 import erykmarnik.eLearn.userassignation.dto.UserAssignationCreatedEvent;
 import erykmarnik.eLearn.userassignation.dto.UserStartedEvent;
+import erykmarnik.eLearn.userresult.dto.PageInfoDto;
 import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto;
 import erykmarnik.eLearn.userresult.dto.UserResultDto;
+import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto;
 import erykmarnik.eLearn.userresult.exception.UserResultNotFoundException;
 import erykmarnik.eLearn.utils.InstantProvider;
 import lombok.AccessLevel;
@@ -12,11 +14,15 @@ import lombok.Builder;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import java.sql.Date;
-import java.time.temporal.ChronoUnit;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 @AllArgsConstructor
 @Builder
@@ -55,6 +61,20 @@ public class UserResultFacade {
     return userResultRepository.findAll().stream()
         .map(UserResult::dto)
         .collect(Collectors.toList());
+  }
+
+  public UserResultDto changeUserResultVisibility(UUID id, UserResultVisibilityTypeDto userResultVisibilityType) {
+    UserResult userResult = userResultRepository.findUserResultById(id).orElseThrow(() ->
+        new UserResultNotFoundException("User result not found"));
+    log.info("changing user result visibility with id {}", id);
+    return userResultRepository.save(userResult.changeVisibility(userResultVisibilityType)).dto();
+  }
+
+  public Page<UserResultDto> getPublicUserResults(PageInfoDto pageable) {
+    requireNonNull(pageable, "pageable must not be null");
+    log.info("getting public user results");
+    PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+    return userResultRepository.findAllUserResultsByUserResultVisibilityType(UserResultVisibilityType.PUBLIC, pageRequest).map(UserResult::dto);
   }
 
   public void cleanup() {

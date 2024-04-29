@@ -26,7 +26,7 @@ class NotificationApiFacade extends ELearnApi {
   UsersNewsDto enrollForNews(EnrollForNewsDto enrollForNews) {
     ResultActions perform = mvc.perform(MockMvcRequestBuilders.post("/api/notification/enroll")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsString(enrollForNews.userMail))
+        .content(mapper.writeValueAsString(enrollForNews))
     )
     checkResponse(perform.andReturn().response)
     UsersNewsDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8), mapper.getTypeFactory().constructType(UsersNewsDto.class))

@@ -67,4 +67,12 @@
         <sqlFile path="db/changelog/sql/change-011-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
         <comment>dodanie tabeli dla powiadomien</comment>
     </changeSet>
+    <changeSet id="17" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-012-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>dodanie kolumny widocznosci wyniku dla tabeli user_results</comment>
+    </changeSet>
+    <changeSet id="18" author="e.marnik">
+        <sqlFile path="db/changelog/sql/change-013-EM.sql" splitStatements="true" endDelimiter=";" stripComments="true" />
+        <comment>inicjalizacja widocznosci widocznosci wyniku dla pustych wartosci</comment>
+    </changeSet>
 </databaseChangeLog>

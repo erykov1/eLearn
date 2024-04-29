@@ -20,4 +20,5 @@ public class UserResultDto {
   Instant completedAt;
   Long userId;
   Instant startedAt;
+  UserResultVisibilityTypeDto userResultVisibilityType;
 }

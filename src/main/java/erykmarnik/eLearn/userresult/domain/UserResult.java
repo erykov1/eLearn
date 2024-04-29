@@ -1,9 +1,8 @@
 package erykmarnik.eLearn.userresult.domain;
 
 import erykmarnik.eLearn.userresult.dto.UserResultDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +25,8 @@ class UserResult {
   Instant completedAt;
   Long userId;
   Instant startedAt;
+  @Enumerated(EnumType.STRING)
+  UserResultVisibilityType userResultVisibilityType;
 
   UserResultDto dto() {
     return UserResultDto.builder()
@@ -35,6 +36,13 @@ class UserResult {
         .completedAt(completedAt)
         .userId(userId)
         .startedAt(startedAt)
+        .userResultVisibilityType(userResultVisibilityType.dto())
+        .build();
+  }
+
+  UserResult changeVisibility(UserResultVisibilityTypeDto userResultVisibilityType) {
+    return toBuilder()
+        .userResultVisibilityType(UserResultVisibilityType.valueOf(userResultVisibilityType.name()))
         .build();
   }
 }

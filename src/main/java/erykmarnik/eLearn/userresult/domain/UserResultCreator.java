@@ -18,6 +18,7 @@ class UserResultCreator {
         .result(EMPTY_RESULT)
         .learningObjectId(event.getLearningObjectId())
         .userId(event.getUserId())
+        .userResultVisibilityType(UserResultVisibilityType.PRIVATE)
         .build();
   }
 

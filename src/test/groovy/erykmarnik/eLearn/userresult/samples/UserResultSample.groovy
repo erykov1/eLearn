@@ -1,6 +1,7 @@
 package erykmarnik.eLearn.userresult.samples
 
 import erykmarnik.eLearn.userresult.dto.UserResultDto
+import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto
 import erykmarnik.eLearn.utils.samples.InstantSample
 
 import java.time.Instant
@@ -14,7 +15,8 @@ trait UserResultSample extends InstantSample {
       learningObjectId: UUID.fromString("5d7dcac2-abad-42f6-b4f4-4a7219f4e3c4"),
       completedAt: NOW_SEC,
       userId: 11L,
-      startedAt: NOW_SEC
+      startedAt: NOW_SEC,
+      userResultVisibilityType: UserResultVisibilityTypeDto.PRIVATE
   ] as Map<String, Object>
 
   UserResultDto createUserResult(Map<String, Object> changes = [:]) {
@@ -26,6 +28,7 @@ trait UserResultSample extends InstantSample {
       .completedAt(changesWithDefaults.completedAt as Instant)
       .userId(changesWithDefaults.userId as Long)
       .startedAt(changesWithDefaults.startedAt as Instant)
+      .userResultVisibilityType(changesWithDefaults.userResultVisibilityType as UserResultVisibilityTypeDto)
       .build()
   }
 
@@ -39,5 +42,6 @@ trait UserResultSample extends InstantSample {
     assert result.completedAt == expected.completedAt
     assert result.userId == expected.userId
     assert result.startedAt == expected.startedAt
+    assert result.userResultVisibilityType == expected.userResultVisibilityType
   }
 }
