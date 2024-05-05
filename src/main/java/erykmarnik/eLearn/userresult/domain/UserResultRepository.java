@@ -5,12 +5,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 interface UserResultRepository extends JpaRepository<UserResult, UUID> {
   Optional<UserResult> findUserResultById(UUID id);
   Optional<UserResult> findUserResultByUserIdAndLearningObjectId(Long userId, UUID learningObjectId);
+  List<UserResult> findAllUserResultsByUserId(Long userId);
 
   @Query("SELECT ur FROM UserResult ur WHERE ur.userResultVisibilityType = :userResultVisibilityType")
   Page<UserResult> findAllUserResultsByUserResultVisibilityType(UserResultVisibilityType userResultVisibilityType, Pageable pageable);

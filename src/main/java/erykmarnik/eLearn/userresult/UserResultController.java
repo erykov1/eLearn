@@ -6,16 +6,16 @@ import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto;
 import erykmarnik.eLearn.userresult.dto.UserResultDto;
 import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,6 +54,15 @@ class UserResultController {
   @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
   ResponseEntity<Page<UserResultDto>> getPublicUsersResults(@ModelAttribute PageInfoDto pageable) {
     return ResponseEntity.ok(userResultFacade.getPublicUserResults(pageable));
+  }
+
+  @GetMapping("/export/{userId}")
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
+  ResponseEntity<Void> exportToCsv(@PathVariable("userId") Long userId, HttpServletResponse httpServletResponse) throws IOException {
+    httpServletResponse.setContentType("text/csv");
+    httpServletResponse.addHeader("Content-Disposition", "attachment; filename=\"userResults.csv\"");
+    userResultFacade.exportToCsv(userId, httpServletResponse.getOutputStream());
+    return ResponseEntity.ok().build();
   }
 
   @Hidden

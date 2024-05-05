@@ -18,6 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -79,6 +83,14 @@ public class UserResultFacade {
 
   public void cleanup() {
     userResultRepository.deleteAll();
+  }
+
+  public void exportToCsv(Long userId, OutputStream outputStream) {
+    List<UserResultDto> userResults = userResultRepository.findAllUserResultsByUserId(userId).stream()
+        .map(UserResult::dto)
+        .toList();
+    log.info("Exporting {} user results to csv", userResults.size());
+    new UserResultCsvExporter(outputStream).exportToCsv(userResults);
   }
 
   private UserResult updateUserResultStartedAt(UserResult userResult) {

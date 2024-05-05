@@ -178,6 +178,13 @@ class InMemoryUserResultRepository implements UserResultRepository {
   }
 
   @Override
+  public List<UserResult> findAllUserResultsByUserId(Long userId) {
+    return table.values().stream()
+        .filter(result -> result.dto().getUserId().equals(userId))
+        .collect(Collectors.toList());
+  }
+
+  @Override
   public Page<UserResult> findAllUserResultsByUserResultVisibilityType(UserResultVisibilityType userResultVisibilityType, Pageable pageable) {
     List<UserResult> results = table.values().stream()
         .filter(userResult -> userResult.dto().getUserResultVisibilityType().equals(userResultVisibilityType.dto()))
