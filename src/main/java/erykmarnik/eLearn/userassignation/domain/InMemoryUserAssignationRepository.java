@@ -137,7 +137,7 @@ class InMemoryUserAssignationRepository implements UserAssignationRepository {
 
   @Override
   public List<UserAssignation> findAll() {
-    return null;
+    return new ArrayList<>(table.values());
   }
 
   @Override

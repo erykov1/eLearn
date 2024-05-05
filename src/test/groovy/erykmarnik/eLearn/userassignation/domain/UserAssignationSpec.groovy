@@ -42,6 +42,22 @@ class UserAssignationSpec extends UserAssignationBaseSpec {
       thrown(UserAlreadyAssignedException)
   }
 
+  def "Should create new user assignation to the same quiz if earlier user assignation has status 'COMPLETED'"() {
+    given: "there is user assignation"
+      def jamesAssignation = userAssignationFacade.createAssignation(createNewUserAssignation(userId: james.userId, learningObjectId: javaQuiz.quizId))
+    and: "user completes quiz"
+      userAssignationFacade.changeToCompleted(jamesAssignation.id)
+    when: "creates new assignation to the same quiz $WEEK_LATER"
+      instantProvider.useFixedClock(WEEK_LATER)
+      def newJamesAssignation = userAssignationFacade.createAssignation(createNewUserAssignation(userId: james.userId, learningObjectId: javaQuiz.quizId))
+    then: "user has two assignations"
+    equalsUserAssignation(userAssignationFacade.findAllUserAssignations(), [createUserAssignation(id: jamesAssignation.id, userId: james.userId,
+        learningObjectId: javaQuiz.quizId, assignedAt: NOW, completedAt: NOW, userAssignationStatus: UserAssignationStatusDto.COMPLETED),
+        createUserAssignation(id: newJamesAssignation.id, userId: james.userId, learningObjectId: javaQuiz.quizId, assignedAt: WEEK_LATER,
+            completedAt: null, userAssignationStatus: UserAssignationStatusDto.NOT_STARTED)
+    ])
+  }
+
   def "Should not create user assignation to quiz that does not exist"() {
     when: "creates new assignation to quiz that does not exist"
       userAssignationFacade.createAssignation(createNewUserAssignation(userId: james.userId, learningObjectId: FAKE_QUIZ_ID))

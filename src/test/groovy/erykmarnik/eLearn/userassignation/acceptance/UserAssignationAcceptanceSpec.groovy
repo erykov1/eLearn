@@ -56,6 +56,23 @@ class UserAssignationAcceptanceSpec extends IntegrationSpec implements InstantSa
           learningObjectId: javaQuiz.quizId, assignedAt: NOW, completedAt: null, userAssignationStatus: UserAssignationStatusDto.NOT_STARTED)])
   }
 
+  def "Should create new user assignation if earlier user assignation has status 'COMPLETED'"() {
+    given: "$JAMES is assigned to $javaQuiz"
+      UserAssignationDto jamesAssignation = userAssignationApiFacade.createUserAssignation(
+          createNewUserAssignation(userId: james.userId, learningObjectId: javaQuiz.quizId))
+    and: "$JAMES completes $javaQuiz"
+      jamesAssignation = userAssignationApiFacade.changeToCompleted(jamesAssignation.id)
+    when: "$JAMES is assigned to $javaQuiz again $WEEK_LATER"
+      timeProviderApiFacade.useFixedClock(WEEK_LATER)
+      UserAssignationDto jamesNewAssignation = userAssignationApiFacade.createUserAssignation(
+          createNewUserAssignation(userId: james.userId, learningObjectId: javaQuiz.quizId))
+    then: "$JAMES has two assignation"
+      equalsUserAssignation([jamesAssignation, jamesNewAssignation], [createUserAssignation(id: jamesAssignation.id, userId: james.userId,
+          learningObjectId: javaQuiz.quizId, assignedAt: NOW, completedAt: NOW, userAssignationStatus: UserAssignationStatusDto.COMPLETED),
+          createUserAssignation(id: jamesNewAssignation.id, userId: james.userId, learningObjectId: javaQuiz.quizId,
+              assignedAt: WEEK_LATER, completedAt: null, userAssignationStatus: UserAssignationStatusDto.NOT_STARTED)])
+  }
+
   def "Should change user assignation to 'IN PROGRESS'"() {
     given: "$JAMES is assigned to $javaQuiz"
       UserAssignationDto jamesAssignation = userAssignationApiFacade.createUserAssignation(

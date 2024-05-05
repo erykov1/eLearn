@@ -2,10 +2,7 @@ package erykmarnik.eLearn.userassignation.domain;
 
 import erykmarnik.eLearn.quiz.domain.QuizFacade;
 import erykmarnik.eLearn.user.domain.UserFacade;
-import erykmarnik.eLearn.userassignation.dto.CreateUserAssignationDto;
-import erykmarnik.eLearn.userassignation.dto.UserAssignationCreatedEvent;
-import erykmarnik.eLearn.userassignation.dto.UserAssignationDto;
-import erykmarnik.eLearn.userassignation.dto.UserStartedEvent;
+import erykmarnik.eLearn.userassignation.dto.*;
 import erykmarnik.eLearn.userassignation.exception.UserAlreadyAssignedException;
 import erykmarnik.eLearn.userassignation.exception.UserAssignationNotFoundException;
 import erykmarnik.eLearn.utils.InstantProvider;
@@ -16,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -35,7 +34,9 @@ public class UserAssignationFacade {
     userAssignationRepository.findUserAssignationByUserIdAndLearningObjectId(
         createUserAssignation.getUserId(),
         createUserAssignation.getLearningObjectId()).ifPresent(userAssignation -> {
-      throw new UserAlreadyAssignedException("User is already assigned");
+        if (userAssignation.dto().getUserAssignationStatus() != UserAssignationStatusDto.COMPLETED) {
+          throw new UserAlreadyAssignedException("User is already assigned");
+        }
     });
     log.info("creating assignation with user {} to object {}", createUserAssignation.getUserId(), createUserAssignation.getLearningObjectId());
     userAssignationEventPublisher.emmitUserAssignationCreatedEvent(new UserAssignationCreatedEvent(createUserAssignation.getUserId(),
@@ -61,6 +62,12 @@ public class UserAssignationFacade {
         .completedAt(instantProvider.now())
         .build();
     return userAssignationRepository.save(userAssignation).dto();
+  }
+
+  public List<UserAssignationDto> findAllUserAssignations() {
+    return userAssignationRepository.findAll().stream()
+        .map(UserAssignation::dto)
+        .collect(Collectors.toList());
   }
 
   public void cleanup() {
