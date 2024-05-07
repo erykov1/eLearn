@@ -21,4 +21,6 @@ abstract class Question {
   String correctAnswer;
   @Column(name = "image_link")
   String imageLink;
+  @Column(name = "media_link")
+  String mediaLink;
 }

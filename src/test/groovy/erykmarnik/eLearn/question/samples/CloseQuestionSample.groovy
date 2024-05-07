@@ -5,6 +5,7 @@ import erykmarnik.eLearn.question.dto.CreateCloseQuestionDto
 
 trait CloseQuestionSample {
   private static final IMAGE_LINK = "https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg"
+  private static final MEDIA_LINK = "https://www.youtube.com/watch?v=GoXwIVyNvX0"
 
   private static Map<String, Object> DEFAULT_CLOSE_QUESTION_DATA = [
       questionId: 11L,
@@ -14,7 +15,8 @@ trait CloseQuestionSample {
       answerC: "answer c",
       answerD: "answer d",
       correctAnswer: "answer a",
-      "imageLink": IMAGE_LINK
+      imageLink: IMAGE_LINK,
+      mediaLink: MEDIA_LINK
   ] as Map<String, Object>
 
   CloseQuestionDto createCloseQuestion(Map<String, Object> changes = [:]) {
@@ -28,6 +30,7 @@ trait CloseQuestionSample {
         .answerD(changesWithDefaults.answerD as String)
         .correctAnswer(changesWithDefaults.correctAnswer as String)
         .imageLink(changesWithDefaults.imageLink as String)
+        .mediaLink(changesWithDefaults.mediaLink as String)
         .build()
   }
 
@@ -41,6 +44,7 @@ trait CloseQuestionSample {
         .answerD(changesWithDefaults.answerD as String)
         .correctAnswer(changesWithDefaults.correctAnswer as String)
         .imageLink(changesWithDefaults.imageLink as String)
+        .mediaLink(changesWithDefaults.mediaLink as String)
         .build()
   }
 
@@ -56,5 +60,6 @@ trait CloseQuestionSample {
     assert result.answerD == expected.answerD
     assert result.correctAnswer == expected.correctAnswer
     assert result.imageLink == expected.imageLink
+    assert result.mediaLink == expected.mediaLink
   }
 }

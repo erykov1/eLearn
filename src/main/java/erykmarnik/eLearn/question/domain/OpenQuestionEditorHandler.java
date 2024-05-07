@@ -12,8 +12,10 @@ class OpenQuestionEditorHandler implements QuestionEditor {
   @Override
   public OpenQuestion editQuestion(EditQuestionDto editQuestion, Question question) {
     question = ((OpenQuestion) question).toBuilder()
-        .questionContent(editQuestion.getEditedValues().get("questionContent"))
-        .correctAnswer(editQuestion.getEditedValues().get("correctAnswer"))
+        .questionContent(editQuestion.getEditedValues().getOrDefault("questionContent", question.getQuestionContent()))
+        .correctAnswer(editQuestion.getEditedValues().getOrDefault("correctAnswer", question.getCorrectAnswer()))
+        .imageLink(editQuestion.getEditedValues().getOrDefault("imageLink", question.getImageLink()))
+        .mediaLink(editQuestion.getEditedValues().getOrDefault("mediaLink", question.getMediaLink()))
         .build();
     return (OpenQuestion) question;
   }

@@ -16,4 +16,5 @@ public class CreateCloseQuestionDto {
   String answerD;
   String correctAnswer;
   String imageLink;
+  String mediaLink;
 }

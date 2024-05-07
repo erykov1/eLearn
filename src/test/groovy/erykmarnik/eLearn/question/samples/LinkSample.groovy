@@ -1,6 +1,6 @@
 package erykmarnik.eLearn.question.samples
 
-trait ImageLinkSample {
+trait LinkSample {
 //  image credits:
 //  Photo by Flo Dahm: https://www.pexels.com/photo/low-angle-photo-of-eiffel-tower-699466/
 //  Photo by Dominika Roseclay: https://www.pexels.com/photo/bright-flag-of-poland-under-cloudy-sky-in-city-4318193/
@@ -21,4 +21,14 @@ trait ImageLinkSample {
   static final String PLANET_IMAGE_LINK = "https://images.pexels.com/photos/87651/earth-blue-jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
   static final String CITY_IMAGE_LINK = "https://images.pexels.com/photos/8828356/pexels-phjpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
   static final String COLUMBUS_IMAGE_LINK = "https://images.pexels.com/photos/6469172/pexels-photo-6469172.jpeg?auto=compress&cs=tinysrgb&w=400"
+  static final String JAVA_MEDIA_LINK = "https://www.youtube.com/watch?v=GoXwIVyNvX0"
+  static final String FRANCE_MEDIA_LINK = "https://www.youtube.com/watch?v=DRs9sZsbqk8&pp=ygUGcGFyaXMg"
+  static final String POLAND_MEDIA_LINK = "https://www.youtube.com/watch?v=ifVVc8xTas0&pp=ygUGcG9sYW5k"
+  static final String SPAIN_MEDIA_LINK = "https://www.youtube.com/watch?v=__civ2E9A4g&pp=ygUFc3BhaW4%3D"
+  static final String GERMANY_MEDIA_LINK = "https://www.youtube.com/watch?v=K0uAIFbuPm8&pp=ygUHZ2VybWFueQ%3D%3D"
+  static final String WHALE_MEDIA_LINK = "https://www.youtube.com/watch?v=bgiPTUy2RqI&pp=ygUKYmx1ZSB3aGFsZQ%3D%3D"
+  static final String POEM_MEDIA_LINK = "https://www.youtube.com/watch?v=dRrvQ1vZxcg&pp=ygUQUm9tZW8gYW5kIEp1bGlldA%3D%3D"
+  static final String PLANET_MEDIA_LINK = "https://www.youtube.com/watch?v=lcZTcfdZ3Ow&pp=ygUHcGxhbmV0cw%3D%3D"
+  static final String CITY_MEDIA_LINK = "https://www.youtube.com/watch?v=HTS2plAOXDM&pp=ygUEY2l0eQ%3D%3D"
+  static final String COLUMBUS_MEDIA_LINK = "https://www.youtube.com/watch?v=BoOkKx03nWo&pp=ygUIY29sdW1idXM%3D"
 }

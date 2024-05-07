@@ -14,4 +14,5 @@ public class CreateOpenQuestionDto {
   String questionContent;
   String correctAnswer;
   String imageLink;
+  String mediaLink;
 }

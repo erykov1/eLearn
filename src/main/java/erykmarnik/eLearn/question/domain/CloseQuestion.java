@@ -5,7 +5,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,8 +25,8 @@ class CloseQuestion extends Question {
 
   @Builder(toBuilder = true)
   public CloseQuestion(Long questionId, String questionContent, String answerA, String answerB,
-                       String answerC, String answerD, String correctAnswer, String imageLink) {
-    super(questionId, questionContent, correctAnswer, imageLink);
+                       String answerC, String answerD, String correctAnswer, String imageLink, String mediaLink) {
+    super(questionId, questionContent, correctAnswer, imageLink, mediaLink);
     this.answerA = answerA;
     this.answerB = answerB;
     this.answerC = answerC;
@@ -44,6 +43,7 @@ class CloseQuestion extends Question {
         .answerD(answerD)
         .correctAnswer(super.getCorrectAnswer())
         .imageLink(super.getImageLink())
+        .mediaLink(super.getMediaLink())
         .build();
   }
 }

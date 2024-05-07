@@ -18,7 +18,8 @@ class QuestionCreator {
         .answerC(createCloseQuestion.getAnswerC())
         .answerD(createCloseQuestion.getAnswerD())
         .correctAnswer(createCloseQuestion.getCorrectAnswer())
-        .imageLink(ImageLinkValidator.checkIfImageLinkIsValid(createCloseQuestion.getImageLink()))
+        .imageLink(LinkValidator.checkIfLinkIsValid(createCloseQuestion.getImageLink(), LinkProvider.getSupportedImageLinks()))
+        .mediaLink(LinkValidator.checkIfLinkIsValid(createCloseQuestion.getMediaLink(), LinkProvider.getSupportedMediaLinks()))
         .build();
   }
 
@@ -26,7 +27,8 @@ class QuestionCreator {
     return OpenQuestion.builder()
         .questionContent(createOpenQuestion.getQuestionContent())
         .correctAnswer(createOpenQuestion.getCorrectAnswer())
-        .imageLink(ImageLinkValidator.checkIfImageLinkIsValid(createOpenQuestion.getImageLink()))
+        .imageLink(LinkValidator.checkIfLinkIsValid(createOpenQuestion.getImageLink(), LinkProvider.getSupportedImageLinks()))
+        .mediaLink(LinkValidator.checkIfLinkIsValid(createOpenQuestion.getMediaLink(), LinkProvider.getSupportedMediaLinks()))
         .build();
   }
 

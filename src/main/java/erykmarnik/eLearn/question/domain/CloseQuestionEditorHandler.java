@@ -12,13 +12,14 @@ class CloseQuestionEditorHandler implements QuestionEditor {
   @Override
   public CloseQuestion editQuestion(EditQuestionDto editQuestion, Question question) {
     question = ((CloseQuestion) question).toBuilder()
-        .questionContent(editQuestion.getEditedValues().get("questionContent"))
-        .correctAnswer(editQuestion.getEditedValues().get("correctAnswer"))
+        .questionContent(editQuestion.getEditedValues().getOrDefault("questionContent", question.getQuestionContent()))
+        .correctAnswer(editQuestion.getEditedValues().getOrDefault("correctAnswer", question.getCorrectAnswer()))
         .answerA(editQuestion.getEditedValues().get("answerA"))
         .answerB(editQuestion.getEditedValues().get("answerB"))
         .answerC(editQuestion.getEditedValues().get("answerC"))
         .answerD(editQuestion.getEditedValues().get("answerD"))
-        .imageLink(editQuestion.getEditedValues().get("imageLink"))
+        .imageLink(editQuestion.getEditedValues().getOrDefault("imageLink", question.getImageLink()))
+        .mediaLink(editQuestion.getEditedValues().getOrDefault("mediaLink", question.getMediaLink()))
         .build();
     return (CloseQuestion) question;
   }
