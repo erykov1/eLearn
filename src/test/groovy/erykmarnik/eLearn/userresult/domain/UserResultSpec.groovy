@@ -7,15 +7,17 @@ import erykmarnik.eLearn.userassignation.dto.UserStartedEvent
 import erykmarnik.eLearn.userresult.dto.PageInfoDto
 import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto
 import erykmarnik.eLearn.userresult.dto.ResultTypeDto
+import erykmarnik.eLearn.userresult.dto.UserResultSummaryDto
 import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto
 import erykmarnik.eLearn.userresult.exception.UserResultNotFoundException
 import erykmarnik.eLearn.userresult.samples.UserResultSample
+import erykmarnik.eLearn.userresult.samples.UserResultSummarySample
 import erykmarnik.eLearn.utils.InstantProvider
 import erykmarnik.eLearn.utils.samples.InstantSample
 import org.springframework.data.domain.Pageable
 import spock.lang.Specification
 
-class UserResultSpec extends Specification implements InstantSample, UserResultSample, UserSample, QuizSample {
+class UserResultSpec extends Specification implements InstantSample, UserResultSample, UserSample, QuizSample, UserResultSummarySample {
   InstantProvider instantProvider = new InstantProvider()
   UserResultFacade userResultFacade = new UserResultConfiguration().userResultFacade(instantProvider)
 
@@ -142,5 +144,42 @@ class UserResultSpec extends Specification implements InstantSample, UserResultS
       userResultFacade.changeUserResultVisibility(userResultFacade.findAllUserResults()[0].id, UserResultVisibilityTypeDto.PRIVATE)
     then: "there are no public user results"
       userResultFacade.getPublicUserResults(PageInfoDto.DEFAULT).toList() == []
+  }
+
+  def "Should get user result summary"() {
+    given: "creates new user result"
+      userResultFacade.onUserResultInitialization(new UserAssignationCreatedEvent(USER_ID, QUIZ_ID))
+    when: "asks for user result summary"
+      def result = userResultFacade.getUserResultsSummary(USER_ID)
+    then: "gets user result summary"
+      equalsUserResultSummary(result, [createUserResultSummary(result: 0, timeSpent: 0, startedAt: null, completedAt: null, learningObjectId: QUIZ_ID)])
+  }
+
+  def "Should not get any user result summary if user has no results"() {
+    when: "asks for user result summary"
+      def result = userResultFacade.getUserResultsSummary(USER_ID)
+    then: "there are no results"
+      result == []
+  }
+
+  def "Should not get user result summary if user does not exist"() {
+    when: "asks for user result summary that does not exist"
+      def result = userResultFacade.getUserResultsSummary(FAKE_USER_ID)
+    then: "gets no results"
+      result == []
+  }
+
+  def "Should get user result summary if user result is public"() {
+    given: "creates new user result"
+      userResultFacade.onUserResultInitialization(new UserAssignationCreatedEvent(USER_ID, QUIZ_ID))
+    when: "user change result to public"
+      userResultFacade.changeUserResultVisibility(userResultFacade.findAllUserResults()[0].id, UserResultVisibilityTypeDto.PUBLIC)
+    then: "gets no results"
+      equalsUserResultSummary(userResultFacade.getPublicUserResultsSummary(QUIZ_ID),
+          [createUserResultSummary(result: 0, timeSpent: 0, startedAt: null, completedAt: null, learningObjectId: QUIZ_ID)])
+    when: "user change result to private"
+      userResultFacade.changeUserResultVisibility(userResultFacade.findAllUserResults()[0].id, UserResultVisibilityTypeDto.PRIVATE)
+    then: "there are no results summary"
+      userResultFacade.getPublicUserResultsSummary(QUIZ_ID) == []
   }
 }

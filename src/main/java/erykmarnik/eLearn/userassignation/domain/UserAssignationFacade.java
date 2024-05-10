@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,13 +32,7 @@ public class UserAssignationFacade {
   public UserAssignationDto createAssignation(CreateUserAssignationDto createUserAssignation) {
     userFacade.checkIfExists(createUserAssignation.getUserId());
     quizFacade.checkIfExists(createUserAssignation.getLearningObjectId());
-    userAssignationRepository.findUserAssignationByUserIdAndLearningObjectId(
-        createUserAssignation.getUserId(),
-        createUserAssignation.getLearningObjectId()).ifPresent(userAssignation -> {
-        if (userAssignation.dto().getUserAssignationStatus() != UserAssignationStatusDto.COMPLETED) {
-          throw new UserAlreadyAssignedException("User is already assigned");
-        }
-    });
+    checkIfCanAssign(createUserAssignation.getUserId(), createUserAssignation.getLearningObjectId());
     log.info("creating assignation with user {} to object {}", createUserAssignation.getUserId(), createUserAssignation.getLearningObjectId());
     userAssignationEventPublisher.emmitUserAssignationCreatedEvent(new UserAssignationCreatedEvent(createUserAssignation.getUserId(),
         createUserAssignation.getLearningObjectId()));
@@ -72,5 +67,13 @@ public class UserAssignationFacade {
 
   public void cleanup() {
     userAssignationRepository.deleteAll();
+  }
+
+  private void checkIfCanAssign(Long userId, UUID learningObjectId) {
+    userAssignationRepository.findUserAssignationByUserIdAndLearningObjectId(userId, learningObjectId).ifPresent(userAssignation -> {
+      if (userAssignation.dto().getUserAssignationStatus() != UserAssignationStatusDto.COMPLETED) {
+        throw new UserAlreadyAssignedException("User is already assigned");
+      }
+    });
   }
 }

@@ -1,6 +1,7 @@
 package erykmarnik.eLearn.userresult.samples
 
 import erykmarnik.eLearn.userresult.dto.UserResultDto
+import erykmarnik.eLearn.userresult.dto.UserResultSummaryDto
 import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto
 import erykmarnik.eLearn.utils.samples.InstantSample
 

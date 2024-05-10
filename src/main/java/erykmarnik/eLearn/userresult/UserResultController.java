@@ -1,10 +1,7 @@
 package erykmarnik.eLearn.userresult;
 
 import erykmarnik.eLearn.userresult.domain.UserResultFacade;
-import erykmarnik.eLearn.userresult.dto.PageInfoDto;
-import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto;
-import erykmarnik.eLearn.userresult.dto.UserResultDto;
-import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto;
+import erykmarnik.eLearn.userresult.dto.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
@@ -54,6 +51,18 @@ class UserResultController {
   @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
   ResponseEntity<Page<UserResultDto>> getPublicUsersResults(@ModelAttribute PageInfoDto pageable) {
     return ResponseEntity.ok(userResultFacade.getPublicUserResults(pageable));
+  }
+
+  @GetMapping("/public/summaries/{learningObjectId}")
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
+  ResponseEntity<List<UserResultSummaryDto>> getPublicUsersResultsSummary(@PathVariable("learningObjectId") UUID learningObjectId) {
+    return ResponseEntity.ok(userResultFacade.getPublicUserResultsSummary(learningObjectId));
+  }
+
+  @GetMapping("/summaries/{userId}")
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
+  ResponseEntity<List<UserResultSummaryDto>> getUsersResultsSummaries(@PathVariable("userId") Long userId) {
+    return ResponseEntity.ok(userResultFacade.getUserResultsSummary(userId));
   }
 
   @GetMapping("/export/{userId}")

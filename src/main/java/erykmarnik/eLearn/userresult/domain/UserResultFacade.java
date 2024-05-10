@@ -2,10 +2,7 @@ package erykmarnik.eLearn.userresult.domain;
 
 import erykmarnik.eLearn.userassignation.dto.UserAssignationCreatedEvent;
 import erykmarnik.eLearn.userassignation.dto.UserStartedEvent;
-import erykmarnik.eLearn.userresult.dto.PageInfoDto;
-import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto;
-import erykmarnik.eLearn.userresult.dto.UserResultDto;
-import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto;
+import erykmarnik.eLearn.userresult.dto.*;
 import erykmarnik.eLearn.userresult.exception.UserResultNotFoundException;
 import erykmarnik.eLearn.utils.InstantProvider;
 import lombok.AccessLevel;
@@ -16,12 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -93,6 +86,18 @@ public class UserResultFacade {
     new UserResultCsvExporter(outputStream).exportToCsv(userResults);
   }
 
+  public List<UserResultSummaryDto> getPublicUserResultsSummary(UUID learningObjectId) {
+    List<UserResult> publicUserResults = getPublicUserResultsForLearningObject(learningObjectId);
+    log.info("getting all public users results summary {}", publicUserResults.size());
+    return new UserResultAnalyzer().getUserResultsSummary(publicUserResults);
+  }
+
+  public List<UserResultSummaryDto> getUserResultsSummary(Long userId) {
+    List<UserResult> userResults = userResultRepository.findAllUserResultsByUserId(userId);
+    log.info("getting all user results summary {}", userResults.size());
+    return new UserResultAnalyzer().getUserResultsSummary(userResults);
+  }
+
   private UserResult updateUserResultStartedAt(UserResult userResult) {
     if(userResult.dto().getStartedAt() == null) {
       log.info("updating user result started at");
@@ -103,5 +108,12 @@ public class UserResultFacade {
       log.info("not updating user result started at");
       return userResult;
     }
+  }
+
+  private List<UserResult> getPublicUserResultsForLearningObject(UUID learningObjectId) {
+    return userResultRepository.findAll().stream()
+        .filter(userResult -> userResult.dto().getUserResultVisibilityType().equals(UserResultVisibilityTypeDto.PUBLIC))
+        .filter(userResult -> userResult.dto().getLearningObjectId().equals(learningObjectId))
+        .collect(Collectors.toList());
   }
 }

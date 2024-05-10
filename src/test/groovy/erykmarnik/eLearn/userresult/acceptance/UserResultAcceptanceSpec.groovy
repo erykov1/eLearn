@@ -15,15 +15,17 @@ import erykmarnik.eLearn.userresult.dto.PageInfoDto
 import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto
 import erykmarnik.eLearn.userresult.dto.ResultTypeDto
 import erykmarnik.eLearn.userresult.dto.UserResultDto
+import erykmarnik.eLearn.userresult.dto.UserResultSummaryDto
 import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto
 import erykmarnik.eLearn.userresult.samples.UserResultSample
+import erykmarnik.eLearn.userresult.samples.UserResultSummarySample
 import erykmarnik.eLearn.utils.TimeProviderApiFacade
 import erykmarnik.eLearn.utils.samples.InstantSample
 import org.springdoc.core.converters.models.Pageable
 import org.springframework.data.domain.PageRequest
 
 class UserResultAcceptanceSpec extends IntegrationSpec implements UserResultSample, InstantSample, UserSample, QuizSample,
-    UserAssignationSample {
+    UserAssignationSample, UserResultSummarySample {
   UserApiFacade userApiFacade
   QuizApiFacade quizApiFacade
   UserResultApiFacade userResultApiFacade
@@ -144,5 +146,29 @@ class UserResultAcceptanceSpec extends IntegrationSpec implements UserResultSamp
       userResultApiFacade.changeUserResultVisibility(userResultApiFacade.getAllUserResults()[0].id, UserResultVisibilityTypeDto.PRIVATE)
     then: "there are no public results"
       userResultApiFacade.getPublicUserResults(PageInfoDto.DEFAULT) == []
+  }
+
+  def "Should not get user result summary if user change result visibility to public"() {
+    given: "$JAMES is assigned to quiz $javaQuiz"
+      userAssignationApiFacade.createUserAssignation(createNewUserAssignation(userId: james.userId, learningObjectId: javaQuiz.quizId))
+    when: "$JAMES changes result visibility to public"
+      userResultApiFacade.changeUserResultVisibility(userResultApiFacade.getAllUserResults()[0].id, UserResultVisibilityTypeDto.PUBLIC)
+    then: "gets $JAMES result as public result"
+      equalsUserResultSummary(userResultApiFacade.getPublicUserResultsSummary(javaQuiz.quizId),
+          [createUserResultSummary(result: 0, timeSpent: 0, startedAt: null, completedAt: null, learningObjectId: javaQuiz.quizId)])
+    when: "$JAMES changes result visibility to private"
+      userResultApiFacade.changeUserResultVisibility(userResultApiFacade.getAllUserResults()[0].id, UserResultVisibilityTypeDto.PRIVATE)
+    then: "there are no public results"
+      userResultApiFacade.getPublicUserResultsSummary(javaQuiz.quizId) == []
+  }
+
+  def "Should get user result summary for user"() {
+    given: "$JAMES is assigned to quiz $javaQuiz"
+      userAssignationApiFacade.createUserAssignation(createNewUserAssignation(userId: james.userId, learningObjectId: javaQuiz.quizId))
+    when: "$JAMES asks for his result summary"
+      def result = userResultApiFacade.getUserResultsSummary(james.userId)
+    then: "$JAMES gets result summary"
+      equalsUserResultSummary(result, [createUserResultSummary(result: 0, timeSpent: 0, startedAt: null, completedAt: null,
+          learningObjectId: javaQuiz.quizId)])
   }
 }

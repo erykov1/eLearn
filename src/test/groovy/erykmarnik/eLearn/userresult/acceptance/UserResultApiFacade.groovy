@@ -6,6 +6,7 @@ import erykmarnik.eLearn.integration.ELearnApi
 import erykmarnik.eLearn.userresult.dto.PageInfoDto
 import erykmarnik.eLearn.userresult.dto.ResultProgressChangedDto
 import erykmarnik.eLearn.userresult.dto.UserResultDto
+import erykmarnik.eLearn.userresult.dto.UserResultSummaryDto
 import erykmarnik.eLearn.userresult.dto.UserResultVisibilityTypeDto
 import org.apache.tomcat.util.json.JSONParser
 import org.json.JSONObject
@@ -65,6 +66,26 @@ class UserResultApiFacade extends ELearnApi {
     checkResponse(perform.andReturn().response)
     UserResultDto value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
         mapper.getTypeFactory().constructType(UserResultDto.class))
+    value
+  }
+
+  List<UserResultSummaryDto> getPublicUserResultsSummary(UUID learningObjectId) {
+    ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/userResult/public/summaries/{learningObjectId}", learningObjectId)
+        .contentType(MediaType.APPLICATION_JSON)
+    )
+    checkResponse(perform.andReturn().response)
+    List<UserResultSummaryDto> value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
+        mapper.getTypeFactory().constructCollectionType(List.class, UserResultSummaryDto.class))
+    value
+  }
+
+  List<UserResultSummaryDto> getUserResultsSummary(Long userId) {
+    ResultActions perform = mvc.perform(MockMvcRequestBuilders.get("/api/userResult/summaries/{userId}", userId)
+        .contentType(MediaType.APPLICATION_JSON)
+    )
+    checkResponse(perform.andReturn().response)
+    List<UserResultSummaryDto> value = mapper.readValue(perform.andReturn().response.getContentAsString(StandardCharsets.UTF_8),
+        mapper.getTypeFactory().constructCollectionType(List.class, UserResultSummaryDto.class))
     value
   }
 
